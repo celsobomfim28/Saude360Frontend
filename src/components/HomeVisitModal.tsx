@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Home, Save, MapPin } from 'lucide-react';
+import { X, Home, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';

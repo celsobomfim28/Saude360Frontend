@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, Syringe, Plus, Calendar, User, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -14,16 +14,6 @@ interface Vaccine {
   ageGroup: string;
   doses: number;
   observations: string;
-}
-
-interface VaccineApplication {
-  id: string;
-  patient: { id: string; fullName: string };
-  vaccine: Vaccine;
-  applicationDate: string;
-  dose: number;
-  batchNumber?: string;
-  appliedBy: { fullName: string };
 }
 
 export function Vaccines() {
@@ -162,15 +152,6 @@ export function Vaccines() {
     setShowScheduleModal(false);
     setSelectedPatientId('');
     setSelectedPatient(null);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'COMPLETE': return 'bg-green-100 text-green-800';
-      case 'IN_PROGRESS': return 'bg-yellow-100 text-yellow-800';
-      case 'PENDING': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
   };
 
   const getStatusBadge = (status: string) => {

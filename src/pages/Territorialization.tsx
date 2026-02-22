@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Map, MapPin, AlertTriangle, TrendingUp, Users, Navigation } from 'lucide-react';
+import { MapPin, AlertTriangle, TrendingUp, Users, Navigation } from 'lucide-react';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';

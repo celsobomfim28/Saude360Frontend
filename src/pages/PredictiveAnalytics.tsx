@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Brain, TrendingUp, AlertTriangle, Users, Activity, Target } from 'lucide-react';
+import { Brain, AlertTriangle, Users } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';

@@ -5,6 +5,7 @@ interface User {
     id: string;
     fullName: string;
     cpf: string;
+    email?: string;
     role: string;
     microArea?: {
         id: string;

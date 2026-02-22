@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Filter, Loader2 } from 'lucide-react';
+import { X, Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';

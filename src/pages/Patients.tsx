@@ -51,7 +51,7 @@ export default function Patients() {
         return translations[group] || group;
     };
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['patients', page, searchTerm, filters],
         queryFn: async () => {
             try {

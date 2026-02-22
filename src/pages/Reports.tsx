@@ -277,24 +277,6 @@ export default function Reports() {
     setFilters(loadedFilters);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'GREEN': return '#10b981';
-      case 'YELLOW': return '#f59e0b';
-      case 'RED': return '#ef4444';
-      default: return '#9ca3af';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'GREEN': return 'Em dia';
-      case 'YELLOW': return 'Atenção';
-      case 'RED': return 'Atrasado';
-      default: return 'Sem dados';
-    }
-  };
-
   const renderFilters = () => {
     if (!selectedReport?.filters) return null;
 

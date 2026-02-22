@@ -148,7 +148,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                 // Convert lastMenstrualDate to ISO datetime if present
                 lastMenstrualDate: formData.eligibilityCriteria.lastMenstrualDate 
                     ? new Date(formData.eligibilityCriteria.lastMenstrualDate + 'T12:00:00.000Z').toISOString()
-                    : undefined
+                    : ''
             }
         };
         

@@ -5,10 +5,9 @@ import {
     Activity,
     Scale,
     Save,
-    ClipboardCheck,
-    AlertCircle
+    ClipboardCheck
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 

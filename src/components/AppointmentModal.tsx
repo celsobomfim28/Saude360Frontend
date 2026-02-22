@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Calendar, Clock, Save, User } from 'lucide-react';
+import { X, Calendar, Save } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';

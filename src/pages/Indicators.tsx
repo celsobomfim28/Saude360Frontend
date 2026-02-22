@@ -23,18 +23,6 @@ export default function Indicators() {
     // Filtrar por microárea se o usuário for ACS
     const microAreaId = user?.role === 'ACS' && user?.microArea?.id ? user.microArea.id : undefined;
 
-    const { data: stats } = useQuery({
-        queryKey: ['management-stats', microAreaId],
-        queryFn: async () => {
-            const params: any = {};
-            if (microAreaId) {
-                params.microAreaId = microAreaId;
-            }
-            const response = await api.get('/management/stats', { params });
-            return response.data.data;
-        }
-    });
-
     const { data: detailedIndicators, isLoading } = useQuery({
         queryKey: ['detailed-indicators', microAreaId],
         queryFn: async () => {

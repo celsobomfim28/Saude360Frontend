@@ -21,7 +21,7 @@ const getStatusLabel = (status: string) => {
   }
 };
 
-export default function IndicatorsReportView({ data, reportType }: IndicatorsReportViewProps) {
+export default function IndicatorsReportView({ data }: IndicatorsReportViewProps) {
   if (!data) return null;
 
   const renderSummary = () => (

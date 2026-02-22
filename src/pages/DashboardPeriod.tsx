@@ -263,7 +263,7 @@ export default function DashboardPeriod() {
                 <XAxis dataKey="period" axisLine={false} tickLine={false} />
                 <YAxis domain={[0, 100]} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  formatter={(value: number) => `${value.toFixed(1)}%`}
+                  formatter={(value: number | undefined) => `${(value ?? 0).toFixed(1)}%`}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                 />
                 <Legend />
