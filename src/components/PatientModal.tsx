@@ -103,6 +103,39 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         }));
     };
 
+    const isUnderTwoYearsOld = (birthDate: string) => {
+        if (!birthDate) return false;
+
+        const [year, month, day] = birthDate.split('-').map(Number);
+        if (!year || !month || !day) return false;
+
+        const birthUtc = Date.UTC(year, month - 1, day);
+        const now = new Date();
+        const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+
+        const twoYearsInMs = 2 * 365.25 * 24 * 60 * 60 * 1000;
+        return (todayUtc - birthUtc) < twoYearsInMs;
+    };
+
+    const isElderlyByBirthDate = (birthDate: string) => {
+        if (!birthDate) return false;
+
+        const [year, month, day] = birthDate.split('-').map(Number);
+        if (!year || !month || !day) return false;
+
+        const now = new Date();
+        const currentYear = now.getUTCFullYear();
+        const currentMonth = now.getUTCMonth() + 1;
+        const currentDay = now.getUTCDate();
+
+        let age = currentYear - year;
+        if (currentMonth < month || (currentMonth === month && currentDay < day)) {
+            age -= 1;
+        }
+
+        return age >= 60;
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('handleSubmit called, current step:', step, 'canSubmit:', canSubmit);
@@ -126,6 +159,9 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
             return;
         }
         
+        const computedIsChild = isUnderTwoYearsOld(formData.birthDate);
+        const computedIsElderly = isElderlyByBirthDate(formData.birthDate);
+
         // Format data before sending
         const payload = {
             ...formData,
@@ -147,6 +183,8 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
             },
             eligibilityCriteria: {
                 ...formData.eligibilityCriteria,
+                isChild: computedIsChild,
+                isElderly: computedIsElderly,
                 // Convert lastMenstrualDate to ISO datetime if present
                 lastMenstrualDate: formData.eligibilityCriteria.lastMenstrualDate 
                     ? new Date(formData.eligibilityCriteria.lastMenstrualDate + 'T12:00:00.000Z').toISOString()
