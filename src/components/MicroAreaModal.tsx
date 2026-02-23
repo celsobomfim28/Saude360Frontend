@@ -32,13 +32,36 @@ export default function MicroAreaModal({ isOpen, onClose, microArea }: MicroArea
     // Filtrar apenas usuários com role ACS
     const acsUsers = users?.filter((user: any) => user.role === 'ACS') || [];
 
+    const getAssignedAcsId = (area: any): string => {
+        if (!area) return '';
+
+        const acsFromArray = Array.isArray(area?.acs) ? area.acs[0] : null;
+        const acsFromObject = !Array.isArray(area?.acs) ? area?.acs : null;
+        const acsFromAgent = area?.agent;
+        const acsFromCommunityAgent = area?.communityAgent;
+        const acsFromResponsible = area?.responsibleAcs;
+        const acsFromUsers = Array.isArray(area?.users)
+            ? area.users.find((user: any) => user?.role === 'ACS')
+            : null;
+
+        const assignedAcs =
+            acsFromArray ||
+            acsFromObject ||
+            acsFromAgent ||
+            acsFromCommunityAgent ||
+            acsFromResponsible ||
+            acsFromUsers;
+
+        return assignedAcs?.id || assignedAcs?.userId || '';
+    };
+
     useEffect(() => {
         if (microArea) {
             setFormData({
                 name: microArea.name || '',
                 code: microArea.code || '',
                 description: microArea.description || '',
-                acsId: microArea.acs && microArea.acs.length > 0 ? microArea.acs[0].id : ''
+                acsId: getAssignedAcsId(microArea)
             });
         } else {
             setFormData({

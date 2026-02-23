@@ -48,6 +48,27 @@ export default function MicroAreas() {
         setEditingMicroArea(null);
     };
 
+    const getAssignedAcsName = (microArea: any): string => {
+        const acsFromArray = Array.isArray(microArea?.acs) ? microArea.acs[0] : null;
+        const acsFromObject = !Array.isArray(microArea?.acs) ? microArea?.acs : null;
+        const acsFromAgent = microArea?.agent;
+        const acsFromCommunityAgent = microArea?.communityAgent;
+        const acsFromResponsible = microArea?.responsibleAcs;
+        const acsFromUsers = Array.isArray(microArea?.users)
+            ? microArea.users.find((user: any) => user?.role === 'ACS')
+            : null;
+
+        const assignedAcs =
+            acsFromArray ||
+            acsFromObject ||
+            acsFromAgent ||
+            acsFromCommunityAgent ||
+            acsFromResponsible ||
+            acsFromUsers;
+
+        return assignedAcs?.fullName || assignedAcs?.name || 'Não atribuído';
+    };
+
     if (isLoading) {
         return (
             <div className="container">
@@ -137,7 +158,7 @@ export default function MicroAreas() {
                                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ACS</span>
                                     </div>
                                     <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                                        {microArea.acs && microArea.acs.length > 0 ? microArea.acs[0].fullName : 'Não atribuído'}
+                                        {getAssignedAcsName(microArea)}
                                     </div>
                                 </div>
                             </div>
