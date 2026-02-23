@@ -111,31 +111,21 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
     };
 
     const handleEligibilityChange = (field: string, value: any) => {
+        if (field === 'isChild' || field === 'isElderly' || field === 'isWoman') {
+            return;
+        }
+
         setFormData(prev => ({
             ...prev,
             eligibilityCriteria: { ...prev.eligibilityCriteria, [field]: value }
         }));
     };
 
-    const isUnderTwoYearsOld = (birthDate: string) => {
-        if (!birthDate) return false;
+    const getAgeFromBirthDate = (birthDate: string) => {
+        if (!birthDate) return null;
 
         const [year, month, day] = birthDate.split('-').map(Number);
-        if (!year || !month || !day) return false;
-
-        const birthUtc = Date.UTC(year, month - 1, day);
-        const now = new Date();
-        const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-
-        const twoYearsInMs = 2 * 365.25 * 24 * 60 * 60 * 1000;
-        return (todayUtc - birthUtc) < twoYearsInMs;
-    };
-
-    const isElderlyByBirthDate = (birthDate: string) => {
-        if (!birthDate) return false;
-
-        const [year, month, day] = birthDate.split('-').map(Number);
-        if (!year || !month || !day) return false;
+        if (!year || !month || !day) return null;
 
         const now = new Date();
         const currentYear = now.getUTCFullYear();
@@ -147,8 +137,47 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
             age -= 1;
         }
 
-        return age >= 60;
+        if (age < 0) return null;
+        return age;
     };
+
+    const computeDerivedEligibility = (birthDate: string, sex: string) => {
+        const age = getAgeFromBirthDate(birthDate);
+        if (age === null) {
+            return { isChild: false, isElderly: false, isWoman: false };
+        }
+
+        return {
+            isChild: age < 2,
+            isElderly: age >= 60,
+            isWoman: sex === 'FEMALE' && age >= 9 && age <= 69
+        };
+    };
+
+    useEffect(() => {
+        const derived = computeDerivedEligibility(formData.birthDate, formData.sex);
+
+        setFormData(prev => {
+            const nextEligibility = {
+                ...prev.eligibilityCriteria,
+                isChild: derived.isChild,
+                isElderly: derived.isElderly,
+                isWoman: derived.isWoman
+            };
+
+            const unchanged =
+                prev.eligibilityCriteria.isChild === nextEligibility.isChild &&
+                prev.eligibilityCriteria.isElderly === nextEligibility.isElderly &&
+                prev.eligibilityCriteria.isWoman === nextEligibility.isWoman;
+
+            if (unchanged) return prev;
+
+            return {
+                ...prev,
+                eligibilityCriteria: nextEligibility
+            };
+        });
+    }, [formData.birthDate, formData.sex]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -204,21 +233,20 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
             return;
         }
         
-        const computedIsChild = isUnderTwoYearsOld(formData.birthDate);
-        const computedIsElderly = isElderlyByBirthDate(formData.birthDate);
+        const derivedEligibility = computeDerivedEligibility(formData.birthDate, formData.sex);
         const menstrualDateIso =
             formData.eligibilityCriteria.isPregnant && formData.eligibilityCriteria.lastMenstrualDate
                 ? new Date(formData.eligibilityCriteria.lastMenstrualDate + 'T12:00:00.000Z').toISOString()
                 : undefined;
 
         const payloadEligibilityCriteria: any = {
-            isChild: computedIsChild,
+            isChild: derivedEligibility.isChild,
             isPregnant: formData.eligibilityCriteria.isPregnant,
             isPostpartum: formData.eligibilityCriteria.isPostpartum,
             hasHypertension: formData.eligibilityCriteria.hasHypertension,
             hasDiabetes: formData.eligibilityCriteria.hasDiabetes,
-            isElderly: computedIsElderly,
-            isWoman: formData.eligibilityCriteria.isWoman
+            isElderly: derivedEligibility.isElderly,
+            isWoman: derivedEligibility.isWoman
         };
 
         if (menstrualDateIso) {
@@ -456,8 +484,8 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                             Puérpera (até 45 dias)
                                         </label>
                                         <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>
-                                            <input type="checkbox" checked={formData.eligibilityCriteria.isWoman} onChange={e => handleEligibilityChange('isWoman', e.target.checked)} />
-                                            Saúde da Mulher (Ppreventivo)
+                                            <input type="checkbox" checked={formData.eligibilityCriteria.isWoman} disabled />
+                                            Saúde da Mulher (Preventivo) • automático
                                         </label>
                                         <div style={{ marginTop: '0.5rem', padding: '1rem', background: 'var(--primary)05', borderRadius: '8px', border: '1px dashed var(--primary)30' }}>
                                             <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--primary)', lineHeight: 1.4 }}>
