@@ -20,6 +20,14 @@ export default function MicroAreas() {
         }
     });
 
+    const { data: users } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+            const response = await api.get('/users');
+            return response.data.data || [];
+        }
+    });
+
     const deleteMutation = useMutation({
         mutationFn: async (id: string) => {
             await api.delete(`/management/micro-areas/${id}`);
@@ -49,22 +57,23 @@ export default function MicroAreas() {
     };
 
     const getAssignedAcsName = (microArea: any): string => {
+        const assignedAcsFromUsers = users?.find((user: any) => {
+            if (user?.role !== 'ACS') return false;
+
+            const userMicroAreaId = user?.microAreaId || user?.microArea?.id;
+            return userMicroAreaId === microArea?.id;
+        });
+
+        if (assignedAcsFromUsers?.fullName) return assignedAcsFromUsers.fullName;
+
+        // fallback para compatibilidade com possíveis formatos antigos
         const acsFromArray = Array.isArray(microArea?.acs) ? microArea.acs[0] : null;
         const acsFromObject = !Array.isArray(microArea?.acs) ? microArea?.acs : null;
         const acsFromAgent = microArea?.agent;
         const acsFromCommunityAgent = microArea?.communityAgent;
         const acsFromResponsible = microArea?.responsibleAcs;
-        const acsFromUsers = Array.isArray(microArea?.users)
-            ? microArea.users.find((user: any) => user?.role === 'ACS')
-            : null;
 
-        const assignedAcs =
-            acsFromArray ||
-            acsFromObject ||
-            acsFromAgent ||
-            acsFromCommunityAgent ||
-            acsFromResponsible ||
-            acsFromUsers;
+        const assignedAcs = acsFromArray || acsFromObject || acsFromAgent || acsFromCommunityAgent || acsFromResponsible;
 
         return assignedAcs?.fullName || assignedAcs?.name || 'Não atribuído';
     };

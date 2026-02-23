@@ -35,6 +35,13 @@ export default function MicroAreaModal({ isOpen, onClose, microArea }: MicroArea
     const getAssignedAcsId = (area: any): string => {
         if (!area) return '';
 
+        const assignedFromUsers = acsUsers.find((user: any) => {
+            const userMicroAreaId = user?.microAreaId || user?.microArea?.id;
+            return userMicroAreaId === area?.id;
+        });
+
+        if (assignedFromUsers?.id) return assignedFromUsers.id;
+
         const acsFromArray = Array.isArray(area?.acs) ? area.acs[0] : null;
         const acsFromObject = !Array.isArray(area?.acs) ? area?.acs : null;
         const acsFromAgent = area?.agent;
@@ -86,18 +93,42 @@ export default function MicroAreaModal({ isOpen, onClose, microArea }: MicroArea
                 payload.description = data.description;
             }
             
-            if (data.acsId) {
-                payload.acsId = data.acsId;
-            }
-
             console.log('Enviando payload:', payload);
             console.log('Modo:', microArea ? 'Editar' : 'Criar');
 
-            if (microArea) {
-                return await api.put(`/management/micro-areas/${microArea.id}`, payload);
-            } else {
-                return await api.post('/management/micro-areas', payload);
+            const microAreaResponse = microArea
+                ? await api.put(`/management/micro-areas/${microArea.id}`, payload)
+                : await api.post('/management/micro-areas', payload);
+
+            const savedMicroAreaId =
+                microArea?.id ||
+                microAreaResponse?.data?.data?.id ||
+                microAreaResponse?.data?.id;
+
+            if (!savedMicroAreaId) {
+                return microAreaResponse;
             }
+
+            const currentlyAssignedAcs = acsUsers.filter((user: any) => {
+                const userMicroAreaId = user?.microAreaId || user?.microArea?.id;
+                return userMicroAreaId === savedMicroAreaId;
+            });
+
+            const selectedAcsId = data.acsId || null;
+
+            // Remove vínculo de ACS anteriormente atribuídos à microárea, se necessário
+            for (const assignedUser of currentlyAssignedAcs) {
+                if (!selectedAcsId || assignedUser.id !== selectedAcsId) {
+                    await api.put(`/users/${assignedUser.id}`, { microAreaId: null });
+                }
+            }
+
+            // Vincula ACS selecionado à microárea via users.microAreaId
+            if (selectedAcsId) {
+                await api.put(`/users/${selectedAcsId}`, { microAreaId: savedMicroAreaId });
+            }
+
+            return microAreaResponse;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['micro-areas'] });
@@ -197,10 +228,11 @@ export default function MicroAreaModal({ isOpen, onClose, microArea }: MicroArea
                         >
                             <option value="">Nenhum ACS atribuído</option>
                             {acsUsers.map((acs: any) => {
-                                const isAssignedToOther = acs.microArea && (!microArea || acs.microArea.id !== microArea.id);
+                                const acsMicroAreaId = acs?.microAreaId || acs?.microArea?.id;
+                                const isAssignedToOther = acsMicroAreaId && (!microArea || acsMicroAreaId !== microArea.id);
                                 return (
                                     <option key={acs.id} value={acs.id}>
-                                        {acs.fullName} {isAssignedToOther ? `(já atribuído à M.Área ${acs.microArea.name})` : ''}
+                                        {acs.fullName} {isAssignedToOther ? `(já atribuído à M.Área ${acs?.microArea?.name || ''})` : ''}
                                     </option>
                                 );
                             })}
