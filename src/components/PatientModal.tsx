@@ -63,7 +63,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
     });
 
     const mutation = useMutation({
-        mutationFn: async (payload: typeof formData) => {
+        mutationFn: async (payload: any) => {
             return await api.post('/patients', payload);
         },
         onSuccess: () => {
@@ -73,17 +73,31 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         },
         onError: (error: any) => {
             const errorData = error.response?.data?.error;
-            if (errorData?.code === 'VALIDATION_ERROR' && errorData?.details) {
-                // Format validation errors
-                const errorMessages = errorData.details
-                    .map((err: any) => `${err.field}: ${err.message}`)
-                    .join('\n');
-                notify.error(`Erros de validação:\n${errorMessages}`);
-            } else {
-                notify.error(extractApiErrorMessage(error, 'Erro ao cadastrar paciente.'));
+            if (errorData) {
+                const codePrefix = errorData.code ? `[${errorData.code}] ` : '';
+                const baseMessage = errorData.message || 'Erro ao cadastrar paciente.';
+
+                if (errorData.details?.length) {
+                    const detailsMessage = errorData.details
+                        .map((err: any) => `${err.field}: ${err.message}`)
+                        .join('\n');
+                    notify.error(`${codePrefix}${baseMessage}\n${detailsMessage}`);
+                    return;
+                }
+
+                notify.error(`${codePrefix}${baseMessage}`);
+                return;
             }
+
+            notify.error(extractApiErrorMessage(error, 'Erro ao cadastrar paciente.'));
         }
     });
+
+    const onlyDigits = (value?: string) => (value || '').replace(/\D/g, '');
+    const emptyToUndefined = (value?: string) => {
+        const normalized = (value || '').trim();
+        return normalized ? normalized : undefined;
+    };
 
     const handleInputChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -158,6 +172,37 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
             notify.warning('Preencha os campos obrigatórios do endereço e microárea.');
             return;
         }
+
+        const cpfDigits = onlyDigits(formData.cpf);
+        const cnsDigits = onlyDigits(formData.cns);
+        const primaryPhoneDigits = onlyDigits(formData.primaryPhone);
+        const secondaryPhoneDigits = onlyDigits(formData.secondaryPhone);
+        const zipCodeDigits = onlyDigits(formData.address.zipCode);
+
+        if (cpfDigits && cpfDigits.length !== 11) {
+            notify.warning('CPF inválido. Informe 11 dígitos ou deixe em branco.');
+            return;
+        }
+
+        if (cnsDigits && cnsDigits.length !== 15) {
+            notify.warning('CNS inválido. Informe 15 dígitos ou deixe em branco.');
+            return;
+        }
+
+        if (primaryPhoneDigits && ![10, 11].includes(primaryPhoneDigits.length)) {
+            notify.warning('Telefone principal inválido. Use 10 ou 11 dígitos.');
+            return;
+        }
+
+        if (secondaryPhoneDigits && ![10, 11].includes(secondaryPhoneDigits.length)) {
+            notify.warning('Telefone secundário inválido. Use 10 ou 11 dígitos.');
+            return;
+        }
+
+        if (formData.eligibilityCriteria.isPregnant && !formData.eligibilityCriteria.lastMenstrualDate) {
+            notify.warning('Informe a DUM para paciente gestante.');
+            return;
+        }
         
         const computedIsChild = isUnderTwoYearsOld(formData.birthDate);
         const computedIsElderly = isElderlyByBirthDate(formData.birthDate);
@@ -181,26 +226,31 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         }
 
         // Format data before sending
-        const payload = {
-            ...formData,
-            // Convert date to ISO datetime with Z timezone
-            birthDate: formData.birthDate ? new Date(formData.birthDate + 'T12:00:00.000Z').toISOString() : '',
-            // Remove non-digits from CPF and phones
-            cpf: formData.cpf.replace(/\D/g, ''),
-            primaryPhone: formData.primaryPhone ? formData.primaryPhone.replace(/\D/g, '') : '',
-            secondaryPhone: formData.secondaryPhone ? formData.secondaryPhone.replace(/\D/g, '') : '',
-            // Ensure optional fields are sent as empty strings if not filled
-            cns: formData.cns || '',
-            motherName: formData.motherName || '',
-            email: formData.email || '',
+        const payload: any = {
+            fullName: formData.fullName.trim(),
+            birthDate: formData.birthDate ? new Date(formData.birthDate + 'T12:00:00.000Z').toISOString() : undefined,
+            sex: formData.sex,
+            microAreaId: formData.microAreaId,
             address: {
-                ...formData.address,
-                complement: formData.address.complement || '',
-                zipCode: formData.address.zipCode ? formData.address.zipCode.replace(/\D/g, '') : '',
-                referencePoint: formData.address.referencePoint || ''
+                street: formData.address.street.trim(),
+                number: formData.address.number.trim(),
+                neighborhood: formData.address.neighborhood.trim(),
+                complement: emptyToUndefined(formData.address.complement),
+                zipCode: emptyToUndefined(zipCodeDigits),
+                referencePoint: emptyToUndefined(formData.address.referencePoint)
             },
             eligibilityCriteria: payloadEligibilityCriteria
         };
+
+        if (cpfDigits) payload.cpf = cpfDigits;
+        if (cnsDigits) payload.cns = cnsDigits;
+        if (primaryPhoneDigits) payload.primaryPhone = primaryPhoneDigits;
+        if (secondaryPhoneDigits) payload.secondaryPhone = secondaryPhoneDigits;
+
+        const motherName = emptyToUndefined(formData.motherName);
+        const email = emptyToUndefined(formData.email);
+        if (motherName) payload.motherName = motherName;
+        if (email) payload.email = email;
         
         console.log('Payload being sent:', JSON.stringify(payload, null, 2));
         setCanSubmit(false); // Reset flag
