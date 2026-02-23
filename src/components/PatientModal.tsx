@@ -3,6 +3,7 @@ import { X, Loader2, Save, User, MapPin, ClipboardList, Phone } from 'lucide-rea
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
+import { extractApiErrorMessage, notify } from '../utils/notifications';
 
 interface PatientModalProps {
     isOpen: boolean;
@@ -67,6 +68,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['patients'] });
+            notify.success('Paciente cadastrado com sucesso!');
             onClose();
         },
         onError: (error: any) => {
@@ -76,9 +78,9 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                 const errorMessages = errorData.details
                     .map((err: any) => `${err.field}: ${err.message}`)
                     .join('\n');
-                alert(`Erros de validação:\n\n${errorMessages}`);
+                notify.error(`Erros de validação:\n${errorMessages}`);
             } else {
-                alert(errorData?.message || 'Erro ao cadastrar paciente.');
+                notify.error(extractApiErrorMessage(error, 'Erro ao cadastrar paciente.'));
             }
         }
     });
@@ -115,12 +117,12 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         
         // Validate required fields
         if (!formData.fullName || !formData.cpf || !formData.birthDate) {
-            alert('Por favor, preencha todos os campos obrigatórios: Nome Completo, CPF e Data de Nascimento');
+            notify.warning('Preencha Nome Completo, CPF e Data de Nascimento.');
             return;
         }
         
         if (!formData.microAreaId || !formData.address.street || !formData.address.number || !formData.address.neighborhood) {
-            alert('Por favor, preencha todos os campos obrigatórios do endereço');
+            notify.warning('Preencha os campos obrigatórios do endereço e microárea.');
             return;
         }
         

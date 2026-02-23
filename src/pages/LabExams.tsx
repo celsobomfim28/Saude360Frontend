@@ -6,6 +6,7 @@ import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import { useAuthStore } from '../stores/authStore';
+import { extractApiErrorMessage, notify } from '../utils/notifications';
 
 const EXAM_TYPES = [
   { value: 'HEMOGRAM', label: 'Hemograma Completo', category: 'Hematologia' },
@@ -58,7 +59,7 @@ export function LabExams() {
     queryKey: ['patients', searchTerm],
     queryFn: async () => {
       const response = await api.get(`/patients?search=${searchTerm}&limit=20`);
-      return response.data.patients;
+      return response.data.data || [];
     },
     enabled: searchTerm.length >= 3
   });
@@ -85,10 +86,10 @@ export function LabExams() {
       setSelectedPatientId('');
       setSelectedExams([]);
       setClinicalInfo('');
-      alert('Solicitação criada com sucesso!');
+      notify.success('Solicitação criada com sucesso!');
     },
     onError: (error: any) => {
-      alert(error.response?.data?.error || 'Erro ao criar solicitação');
+      notify.error(extractApiErrorMessage(error, 'Erro ao criar solicitação de exame.'));
     }
   });
 
@@ -100,13 +101,16 @@ export function LabExams() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-evaluations'] });
       queryClient.invalidateQueries({ queryKey: ['lab-exam-requests'] });
-      alert('Exame avaliado com sucesso!');
+      notify.success('Exame avaliado com sucesso!');
+    },
+    onError: (error: any) => {
+      notify.error(extractApiErrorMessage(error, 'Erro ao avaliar exame.'));
     }
   });
 
   const handleCreateRequest = () => {
     if (!selectedPatientId || selectedExams.length === 0) {
-      alert('Selecione um paciente e pelo menos um exame');
+      notify.warning('Selecione um paciente e pelo menos um exame.');
       return;
     }
 
