@@ -9,6 +9,14 @@ import LoadingSpinner from '../components/LoadingSpinner';
 type PeriodType = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
 type ViewType = 'stats' | 'evolution';
 
+const periodCandidatesMap: Record<PeriodType, string[]> = {
+  daily: ['daily', 'day', 'DAILY', 'DAY'],
+  weekly: ['weekly', 'week', 'WEEKLY', 'WEEK'],
+  monthly: ['monthly', 'month', 'MONTHLY', 'MONTH'],
+  quarterly: ['quarterly', 'quarter', 'QUARTERLY', 'QUARTER'],
+  yearly: ['yearly', 'year', 'YEARLY', 'YEAR'],
+};
+
 const periodLabels: Record<PeriodType, string> = {
   daily: 'Diário',
   weekly: 'Semanal',
@@ -35,16 +43,36 @@ export default function DashboardPeriod() {
     endDate: new Date().toISOString().split('T')[0],
   });
 
+  const toApiStartDate = (date: string) => `${date}T00:00:00`;
+  const toApiEndDate = (date: string) => `${date}T23:59:59`;
+
+  const extractErrorMessage = (error: any) =>
+    error?.response?.data?.error?.message ||
+    error?.response?.data?.message ||
+    'Não foi possível carregar os dados para esse período. Tente outro filtro ou ajuste o intervalo de datas.';
+
   // Query para estatísticas por período
-  const { data: statsData, isLoading: statsLoading } = useQuery({
+  const { data: statsData, isLoading: statsLoading, error: statsError } = useQuery({
     queryKey: ['dashboard-stats', period, dateRange],
     queryFn: async () => {
-      const response = await api.post('/dashboard/stats-by-period', {
-        startDate: new Date(dateRange.startDate).toISOString(),
-        endDate: new Date(dateRange.endDate).toISOString(),
-        period,
-      });
-      return response.data;
+      const periodCandidates = periodCandidatesMap[period] || [period];
+      let lastError: any;
+
+      for (const periodValue of periodCandidates) {
+        try {
+          const response = await api.post('/dashboard/stats-by-period', {
+            startDate: toApiStartDate(dateRange.startDate),
+            endDate: toApiEndDate(dateRange.endDate),
+            period: periodValue,
+          });
+
+          return response.data;
+        } catch (error: any) {
+          lastError = error;
+        }
+      }
+
+      throw lastError;
     },
     enabled: viewType === 'stats',
   });
@@ -54,8 +82,8 @@ export default function DashboardPeriod() {
     queryKey: ['dashboard-evolution', indicator, dateRange],
     queryFn: async () => {
       const response = await api.post('/dashboard/indicator-evolution', {
-        startDate: new Date(dateRange.startDate).toISOString(),
-        endDate: new Date(dateRange.endDate).toISOString(),
+        startDate: toApiStartDate(dateRange.startDate),
+        endDate: toApiEndDate(dateRange.endDate),
         indicator,
       });
       return response.data;
@@ -142,6 +170,21 @@ export default function DashboardPeriod() {
       </div>
 
       {/* Estatísticas por Período */}
+      {viewType === 'stats' && statsError && (
+        <div
+          className="card"
+          style={{
+            marginBottom: '1.5rem',
+            borderLeft: '4px solid var(--danger)',
+            backgroundColor: '#fee2e2',
+            color: '#991b1b'
+          }}
+        >
+          <h3 style={{ marginTop: 0 }}>Erro ao carregar estatísticas por período</h3>
+          <p style={{ marginBottom: 0 }}>{extractErrorMessage(statsError)}</p>
+        </div>
+      )}
+
       {viewType === 'stats' && statsData && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Cards de Resumo */}
