@@ -9,14 +9,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 type PeriodType = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
 type ViewType = 'stats' | 'evolution';
 
-const periodCandidatesMap: Record<PeriodType, string[]> = {
-  daily: ['daily', 'day', 'DAILY', 'DAY'],
-  weekly: ['weekly', 'week', 'WEEKLY', 'WEEK'],
-  monthly: ['monthly', 'month', 'MONTHLY', 'MONTH'],
-  quarterly: ['quarterly', 'quarter', 'QUARTERLY', 'QUARTER'],
-  yearly: ['yearly', 'year', 'YEARLY', 'YEAR'],
-};
-
 const periodLabels: Record<PeriodType, string> = {
   daily: 'Diário',
   weekly: 'Semanal',
@@ -43,38 +35,28 @@ export default function DashboardPeriod() {
     endDate: new Date().toISOString().split('T')[0],
   });
 
-  const toApiStartDate = (date: string) => `${date}T00:00:00`;
-  const toApiEndDate = (date: string) => `${date}T23:59:59`;
-
   const extractErrorMessage = (error: any) =>
     error?.response?.data?.error?.message ||
     error?.response?.data?.message ||
     'Não foi possível carregar os dados para esse período. Tente outro filtro ou ajuste o intervalo de datas.';
 
+  const toApiStartDate = (date: string) => `${date}T00:00:00.000Z`;
+  const toApiEndDate = (date: string) => `${date}T23:59:59.000Z`;
+
   // Query para estatísticas por período
   const { data: statsData, isLoading: statsLoading, error: statsError } = useQuery({
     queryKey: ['dashboard-stats', period, dateRange],
     queryFn: async () => {
-      const periodCandidates = periodCandidatesMap[period] || [period];
-      let lastError: any;
+      const response = await api.post('/dashboard/stats-by-period', {
+        startDate: toApiStartDate(dateRange.startDate),
+        endDate: toApiEndDate(dateRange.endDate),
+        period,
+      });
 
-      for (const periodValue of periodCandidates) {
-        try {
-          const response = await api.post('/dashboard/stats-by-period', {
-            startDate: toApiStartDate(dateRange.startDate),
-            endDate: toApiEndDate(dateRange.endDate),
-            period: periodValue,
-          });
-
-          return response.data;
-        } catch (error: any) {
-          lastError = error;
-        }
-      }
-
-      throw lastError;
+      return response.data;
     },
     enabled: viewType === 'stats',
+    retry: false,
   });
 
   // Query para evolução de indicadores
@@ -89,6 +71,7 @@ export default function DashboardPeriod() {
       return response.data;
     },
     enabled: viewType === 'evolution',
+    retry: false,
   });
 
   const isLoading = statsLoading || evolutionLoading;
