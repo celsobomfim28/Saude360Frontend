@@ -161,6 +161,24 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         
         const computedIsChild = isUnderTwoYearsOld(formData.birthDate);
         const computedIsElderly = isElderlyByBirthDate(formData.birthDate);
+        const menstrualDateIso =
+            formData.eligibilityCriteria.isPregnant && formData.eligibilityCriteria.lastMenstrualDate
+                ? new Date(formData.eligibilityCriteria.lastMenstrualDate + 'T12:00:00.000Z').toISOString()
+                : undefined;
+
+        const payloadEligibilityCriteria: any = {
+            isChild: computedIsChild,
+            isPregnant: formData.eligibilityCriteria.isPregnant,
+            isPostpartum: formData.eligibilityCriteria.isPostpartum,
+            hasHypertension: formData.eligibilityCriteria.hasHypertension,
+            hasDiabetes: formData.eligibilityCriteria.hasDiabetes,
+            isElderly: computedIsElderly,
+            isWoman: formData.eligibilityCriteria.isWoman
+        };
+
+        if (menstrualDateIso) {
+            payloadEligibilityCriteria.lastMenstrualDate = menstrualDateIso;
+        }
 
         // Format data before sending
         const payload = {
@@ -181,15 +199,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                 zipCode: formData.address.zipCode ? formData.address.zipCode.replace(/\D/g, '') : '',
                 referencePoint: formData.address.referencePoint || ''
             },
-            eligibilityCriteria: {
-                ...formData.eligibilityCriteria,
-                isChild: computedIsChild,
-                isElderly: computedIsElderly,
-                // Convert lastMenstrualDate to ISO datetime if present
-                lastMenstrualDate: formData.eligibilityCriteria.lastMenstrualDate 
-                    ? new Date(formData.eligibilityCriteria.lastMenstrualDate + 'T12:00:00.000Z').toISOString()
-                    : ''
-            }
+            eligibilityCriteria: payloadEligibilityCriteria
         };
         
         console.log('Payload being sent:', JSON.stringify(payload, null, 2));
