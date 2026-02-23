@@ -116,8 +116,8 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
         console.log('On step 3 and canSubmit is true, proceeding with submission');
         
         // Validate required fields
-        if (!formData.fullName || !formData.cpf || !formData.birthDate) {
-            notify.warning('Preencha Nome Completo, CPF e Data de Nascimento.');
+        if (!formData.fullName || !formData.birthDate) {
+            notify.warning('Preencha Nome Completo e Data de Nascimento.');
             return;
         }
         
@@ -233,7 +233,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                         <input style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }} value={formData.motherName} onChange={e => handleInputChange('motherName', e.target.value)} />
                                     </div>
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>CPF</label>
+                                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>CPF (opcional)</label>
                                         <input style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }} placeholder="000.000.000-00" value={formData.cpf} onChange={e => handleInputChange('cpf', e.target.value)} />
                                     </div>
                                     <div>
