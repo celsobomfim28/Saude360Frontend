@@ -186,7 +186,7 @@ export function LabExams() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Exames Laboratoriais
@@ -195,7 +195,7 @@ export function LabExams() {
             Gerencie solicitações e resultados de exames
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="actions-wrap">
           <button
             onClick={() => setView('list')}
             className={view === 'list' ? 'btn btn-primary' : 'btn'}
@@ -224,11 +224,12 @@ export function LabExams() {
       {/* Lista de Solicitações */}
       {view === 'list' && (
         <>
-          <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
+          <div className="card glass filter-bar">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '200px' }}
+              className="filter-control"
+              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
             >
               <option value="">Todos os Status</option>
               <option value="PENDING">Pendente</option>
@@ -260,7 +261,7 @@ export function LabExams() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {requests?.map((request: any) => (
                   <div key={request.id} style={{ padding: '1.25rem', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem' }}>
                           <User size={18} color="var(--primary)" />
@@ -276,7 +277,7 @@ export function LabExams() {
                           <span>Solicitado por: {request.requestedBy.fullName}</span>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                         {getStatusBadge(request.status)}
                         {getPriorityBadge(request.priority)}
                       </div>
@@ -429,11 +430,10 @@ export function LabExams() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+          <div className="actions-wrap" style={{ marginTop: '1.5rem' }}>
             <button
               onClick={() => setView('list')}
               className="btn"
-              style={{ flex: 1 }}
             >
               Cancelar
             </button>
@@ -441,7 +441,6 @@ export function LabExams() {
               onClick={handleCreateRequest}
               disabled={createRequestMutation.isPending}
               className="btn btn-primary"
-              style={{ flex: 1 }}
             >
               {createRequestMutation.isPending ? 'Criando...' : 'Criar Solicitação'}
             </button>

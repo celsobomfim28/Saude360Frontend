@@ -56,7 +56,7 @@ export default function Settings() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         Configurações
@@ -67,9 +67,9 @@ export default function Settings() {
                 </div>
             </header>
 
-            <div className="grid" style={{ gridTemplateColumns: '250px 1fr', gap: '1.5rem', alignItems: 'flex-start' }}>
+            <div className="split-layout" style={{ alignItems: 'flex-start' }}>
                 {/* Sidebar Tabs */}
-                <aside className="card" style={{ padding: '0.5rem' }}>
+                <aside className="card split-layout-aside" style={{ padding: '0.5rem' }}>
                     <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                         {[
                             { id: 'profile', label: 'Meu Perfil', icon: User },
@@ -97,7 +97,7 @@ export default function Settings() {
                 </aside>
 
                 {/* Main Content */}
-                <main>
+                <main className="split-layout-main">
                     {activeTab === 'profile' && (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -223,7 +223,7 @@ export default function Settings() {
                                     { label: 'Lembretes de Visitas Domiciliares', description: 'Receba lembretes de visitas pendentes' },
                                     { label: 'Notificações de Novos Pacientes', description: 'Seja informado sobre novos cadastros na sua área' }
                                 ].map((item, index) => (
-                                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--border)' }}>
+                                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--border)' }}>
                                         <div>
                                             <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem' }}>{item.label}</p>
                                             <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.description}</p>
@@ -262,7 +262,7 @@ export default function Settings() {
                                     <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
                                         Você está conectado neste dispositivo
                                     </p>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderRadius: '0.5rem', backgroundColor: 'var(--background)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', padding: '1rem', borderRadius: '0.5rem', backgroundColor: 'var(--background)' }}>
                                         <div>
                                             <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem' }}>Navegador Atual</p>
                                             <p style={{ margin: '0.25rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -295,7 +295,7 @@ export default function Settings() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div style={{ padding: '1.25rem', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                    <div className="form-grid cols-2" style={{ gap: '1.5rem' }}>
                                         <div>
                                             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', margin: 0 }}>Versão do Sistema</p>
                                             <p style={{ margin: '0.5rem 0 0', fontWeight: 600 }}>5.1.2</p>

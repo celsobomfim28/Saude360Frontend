@@ -88,7 +88,7 @@ export default function MicroAreas() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         Gestão de Microáreas
@@ -97,10 +97,12 @@ export default function MicroAreas() {
                         Gerencie as microáreas da unidade de saúde
                     </p>
                 </div>
-                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
-                    <Plus size={20} />
-                    Nova Microárea
-                </button>
+                <div className="page-header-actions">
+                    <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
+                        <Plus size={20} />
+                        Nova Microárea
+                    </button>
+                </div>
             </header>
 
             <MicroAreaModal
@@ -110,7 +112,7 @@ export default function MicroAreas() {
             />
 
             {microAreas && microAreas.length > 0 ? (
-                <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                <div className="responsive-cards-grid">
                     {microAreas.map((microArea: any) => (
                         <motion.div
                             key={microArea.id}

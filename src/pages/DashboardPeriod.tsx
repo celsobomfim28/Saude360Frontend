@@ -86,7 +86,7 @@ export default function DashboardPeriod() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Dashboard por Período
@@ -95,7 +95,7 @@ export default function DashboardPeriod() {
             Análise temporal de estatísticas e indicadores
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="actions-wrap">
           <button
             onClick={() => setViewType('stats')}
             className={viewType === 'stats' ? 'btn btn-primary' : 'btn'}
@@ -112,12 +112,13 @@ export default function DashboardPeriod() {
       </header>
 
       {/* Filtros */}
-      <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="card glass filter-bar">
         {viewType === 'stats' && (
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value as PeriodType)}
-            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+            className="filter-control"
+            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
           >
             {Object.entries(periodLabels).map(([key, label]) => (
               <option key={key} value={key}>{label}</option>
@@ -129,7 +130,8 @@ export default function DashboardPeriod() {
           <select
             value={indicator}
             onChange={(e) => setIndicator(e.target.value)}
-            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+            className="filter-control"
+            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
           >
             {Object.entries(indicatorLabels).map(([key, label]) => (
               <option key={key} value={key}>{label}</option>
@@ -141,14 +143,16 @@ export default function DashboardPeriod() {
           type="date"
           value={dateRange.startDate}
           onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-          style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+          className="filter-control"
+          style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
         />
 
         <input
           type="date"
           value={dateRange.endDate}
           onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-          style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+          className="filter-control"
+          style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
         />
       </div>
 
@@ -181,7 +185,7 @@ export default function DashboardPeriod() {
             }), { newPatients: 0, appointments: 0, homeVisits: 0, vaccineApplications: 0, evaluatedExams: 0 });
 
             return (
-              <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+              <div className="indicator-cards-grid">
                 <StatCard icon={Users} label="Novos Pacientes" value={totals.newPatients} color="var(--primary)" />
                 <StatCard icon={Calendar} label="Consultas" value={totals.appointments} color="var(--accent)" />
                 <StatCard icon={Activity} label="Visitas" value={totals.homeVisits} color="var(--success)" />
@@ -245,7 +249,7 @@ export default function DashboardPeriod() {
           {evolutionData.length > 0 && (() => {
             const latest = evolutionData[evolutionData.length - 1];
             return (
-              <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+              <div className="indicator-cards-grid">
                 <StatCard icon={TrendingUp} label="Verde" value={latest.green} color="var(--status-green)" percentage={latest.greenPercentage} />
                 <StatCard icon={Activity} label="Amarelo" value={latest.yellow} color="var(--status-yellow)" />
                 <StatCard icon={Activity} label="Vermelho" value={latest.red} color="var(--status-red)" />

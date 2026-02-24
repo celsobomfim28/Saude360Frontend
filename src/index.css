@@ -335,6 +335,24 @@ textarea::placeholder {
   gap: 1rem;
 }
 
+.responsive-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.indicator-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.summary-kpis-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
 .actions-wrap {
   display: flex;
   flex-direction: column;
@@ -532,6 +550,22 @@ textarea::placeholder {
 
   .form-grid.cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid.cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .responsive-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .indicator-cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .summary-kpis-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

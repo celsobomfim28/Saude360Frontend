@@ -282,12 +282,7 @@ export default function Reports() {
 
     return (
       <div style={{ marginBottom: '1.5rem' }}>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1rem',
-          marginBottom: '1rem'
-        }}>
+      <div className="form-grid cols-3" style={{ marginBottom: '1rem' }}>
           {selectedReport.filters.includes('startDate') && (
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500' }}>
@@ -429,7 +424,7 @@ export default function Reports() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Resumo da Microárea
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               <div className="card" style={{ padding: '1.5rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                   Total de Famílias
@@ -462,6 +457,8 @@ export default function Reports() {
                   <div key={mIndex} style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '0.75rem',
                     padding: '0.75rem',
                     backgroundColor: 'var(--background)',
                     borderRadius: '0.5rem'
@@ -504,7 +501,7 @@ export default function Reports() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Totais do Período
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               <div className="card" style={{ padding: '1.5rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                   Visitas
@@ -588,7 +585,7 @@ export default function Reports() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Resumo de Visitas
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               <div className="card" style={{ padding: '1.5rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                   Total de Visitas
@@ -647,7 +644,7 @@ export default function Reports() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Resumo da Busca Ativa
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               <div className="card" style={{ padding: '1.5rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                   Pacientes com Pendências
@@ -714,7 +711,7 @@ export default function Reports() {
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Resumo
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               <div className="card" style={{ padding: '1.5rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
                   Total de Pacientes
@@ -768,7 +765,7 @@ export default function Reports() {
                 patient.riskLevel === 'MÉDIO' ? '#f59e0b' : '#10b981'
               }`
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
                 <div>
                   <h4 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '0.25rem' }}>
                     {patient.name}
@@ -834,14 +831,16 @@ export default function Reports() {
 
   return (
     <div className="container">
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '600', color: 'var(--text)', marginBottom: '0.5rem' }}>
-          Relatórios
-        </h1>
-        <p style={{ color: 'var(--text-muted)' }}>
-          Gere relatórios detalhados para análise e acompanhamento
-        </p>
-      </div>
+      <header className="page-header">
+        <div>
+          <h1 style={{ fontSize: '2rem', fontWeight: '600', color: 'var(--text)', marginBottom: '0.5rem' }}>
+            Relatórios
+          </h1>
+          <p style={{ color: 'var(--text-muted)' }}>
+            Gere relatórios detalhados para análise e acompanhamento
+          </p>
+        </div>
+      </header>
 
       <div className="split-layout">
         <div className="split-layout-aside">
@@ -978,7 +977,7 @@ export default function Reports() {
               onChange={(e) => setFilterName(e.target.value)}
               style={{ marginBottom: '1rem' }}
             />
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            <div className="modal-actions" style={{ marginTop: '0.75rem' }}>
               <button
                 className="btn"
                 onClick={() => {

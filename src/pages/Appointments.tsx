@@ -128,7 +128,7 @@ export default function Appointments() {
             {filteredAppointments && filteredAppointments.length > 0 ? (
                 <div className="card">
                     <div className="desktop-only table-scroll">
-                        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '860px' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--border)' }}>
                                     <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Data/Hora</th>

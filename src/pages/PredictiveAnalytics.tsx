@@ -64,7 +64,7 @@ export default function PredictiveAnalytics() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Análise Preditiva
@@ -73,7 +73,7 @@ export default function PredictiveAnalytics() {
             Inteligência artificial para prevenção e planejamento
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="actions-wrap">
           <button
             onClick={() => setViewMode('predictions')}
             className={viewMode === 'predictions' ? 'btn btn-primary' : 'btn'}
@@ -104,56 +104,97 @@ export default function PredictiveAnalytics() {
         >
           <h3 style={{ marginBottom: '1.5rem' }}>Predição de Faltas em Consultas</h3>
           {predictions && predictions.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid var(--border)' }}>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Paciente</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Consulta</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Probabilidade</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Fatores de Risco</th>
-                    <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Ação Sugerida</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {predictions.map((pred: any) => (
-                    <tr key={pred.appointmentId} style={{ borderBottom: '1px solid var(--border)' }}>
-                      <td style={{ padding: '1rem' }}>
-                        <div style={{ fontWeight: 600 }}>{pred.patientName}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Microárea: {pred.microArea}</div>
-                      </td>
-                      <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
-                        {new Date(pred.appointmentDate).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <div style={{ 
-                            width: '100px', 
-                            height: '8px', 
-                            backgroundColor: 'var(--background)', 
-                            borderRadius: '4px',
-                            overflow: 'hidden'
-                          }}>
-                            <div style={{ 
-                              width: `${pred.absenceProbability}%`, 
-                              height: '100%', 
-                              backgroundColor: pred.absenceProbability > 70 ? 'var(--status-red)' : pred.absenceProbability > 40 ? 'var(--status-yellow)' : 'var(--status-green)'
-                            }} />
-                          </div>
-                          <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{pred.absenceProbability}%</span>
-                        </div>
-                      </td>
-                      <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                        {pred.riskFactors.join(', ')}
-                      </td>
-                      <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
-                        {pred.suggestedAction}
-                      </td>
+            <>
+              <div className="desktop-only table-scroll">
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid var(--border)' }}>
+                      <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Paciente</th>
+                      <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Consulta</th>
+                      <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Probabilidade</th>
+                      <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Fatores de Risco</th>
+                      <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Ação Sugerida</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {predictions.map((pred: any) => (
+                      <tr key={pred.appointmentId} style={{ borderBottom: '1px solid var(--border)' }}>
+                        <td style={{ padding: '1rem' }}>
+                          <div style={{ fontWeight: 600 }}>{pred.patientName}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Microárea: {pred.microArea}</div>
+                        </td>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                          {new Date(pred.appointmentDate).toLocaleDateString('pt-BR')}
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{
+                              width: '100px',
+                              height: '8px',
+                              backgroundColor: 'var(--background)',
+                              borderRadius: '4px',
+                              overflow: 'hidden'
+                            }}>
+                              <div style={{
+                                width: `${pred.absenceProbability}%`,
+                                height: '100%',
+                                backgroundColor: pred.absenceProbability > 70 ? 'var(--status-red)' : pred.absenceProbability > 40 ? 'var(--status-yellow)' : 'var(--status-green)'
+                              }} />
+                            </div>
+                            <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{pred.absenceProbability}%</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                          {pred.riskFactors.join(', ')}
+                        </td>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                          {pred.suggestedAction}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mobile-only mobile-card-list">
+                {predictions.map((pred: any) => (
+                  <div className="mobile-card" key={`mobile-${pred.appointmentId}`}>
+                    <p style={{ margin: 0, fontWeight: 700 }}>{pred.patientName}</p>
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Microárea: {pred.microArea}</p>
+
+                    <div className="mobile-card-row">
+                      <span className="mobile-card-label">Consulta</span>
+                      <span>{new Date(pred.appointmentDate).toLocaleDateString('pt-BR')}</span>
+                    </div>
+
+                    <div className="mobile-card-row">
+                      <span className="mobile-card-label">Probabilidade</span>
+                      <span style={{ fontWeight: 700 }}>{pred.absenceProbability}%</span>
+                    </div>
+
+                    <div style={{ marginTop: '0.5rem', height: '8px', backgroundColor: 'var(--background)', borderRadius: '4px', overflow: 'hidden' }}>
+                      <div
+                        style={{
+                          width: `${pred.absenceProbability}%`,
+                          height: '100%',
+                          backgroundColor: pred.absenceProbability > 70 ? 'var(--status-red)' : pred.absenceProbability > 40 ? 'var(--status-yellow)' : 'var(--status-green)'
+                        }}
+                      />
+                    </div>
+
+                    <div className="mobile-card-row">
+                      <span className="mobile-card-label">Fatores</span>
+                      <span style={{ textAlign: 'right' }}>{pred.riskFactors.join(', ')}</span>
+                    </div>
+
+                    <div className="mobile-card-row">
+                      <span className="mobile-card-label">Ação</span>
+                      <span style={{ textAlign: 'right' }}>{pred.suggestedAction}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <EmptyState
               icon={Brain}
@@ -173,7 +214,7 @@ export default function PredictiveAnalytics() {
         >
           <h3 style={{ marginBottom: '1.5rem' }}>Pacientes de Alto Risco</h3>
           {riskPatients && riskPatients.length > 0 ? (
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               {riskPatients.map((patient: any) => (
                 <div key={patient.patientId} style={{ 
                   padding: '1.25rem', 
@@ -230,11 +271,12 @@ export default function PredictiveAnalytics() {
       {/* Tendências */}
       {viewMode === 'trends' && (
         <>
-          <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
+          <div className="card glass filter-bar">
             <select
               value={selectedIndicator}
               onChange={(e) => setSelectedIndicator(e.target.value)}
-              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '200px' }}
+              className="filter-control"
+              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
             >
               {indicators.map((ind) => (
                 <option key={ind.value} value={ind.value}>
@@ -245,7 +287,7 @@ export default function PredictiveAnalytics() {
           </div>
 
           {trends && (
-            <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            <div className="responsive-cards-grid">
               <motion.div
                 className="card"
                 initial={{ opacity: 0, y: 20 }}

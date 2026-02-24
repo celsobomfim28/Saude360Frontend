@@ -134,7 +134,7 @@ export default function Indicators() {
     return (
         <div className="container">
             {/* Header */}
-            <header style={{ marginBottom: '2rem' }}>
+            <header className="page-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                     <Target size={32} color="var(--primary)" />
                     <h1 style={{ margin: 0 }}>Indicadores de Desempenho</h1>
@@ -158,7 +158,7 @@ export default function Indicators() {
             </header>
 
             {/* Summary Cards */}
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+            <div className="responsive-cards-grid" style={{ marginBottom: '2rem' }}>
                 <div className="card" style={{ padding: '1rem', borderLeft: '4px solid var(--primary)' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Total</div>
                     <div style={{ fontSize: '1.75rem', fontWeight: 800 }}>{totalIndicators}</div>
@@ -178,13 +178,7 @@ export default function Indicators() {
             </div>
 
             {/* Category Tabs */}
-            <div style={{ 
-                display: 'flex', 
-                gap: '0.5rem', 
-                marginBottom: '1.5rem', 
-                overflowX: 'auto',
-                paddingBottom: '0.5rem'
-            }}>
+            <div className="tabs-scroll" style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem' }}>
                 {categories.map((cat) => (
                     <button
                         key={cat.id}
@@ -209,7 +203,7 @@ export default function Indicators() {
             </div>
 
             {/* Indicators Grid */}
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
                 <AnimatePresence mode="popLayout">
                     {filteredIndicators.map((ind: any) => (
                         <motion.div
@@ -239,7 +233,7 @@ export default function Indicators() {
                                 e.currentTarget.style.boxShadow = '';
                             }}
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
                                 <div>
                                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
                                         {ind.id}
@@ -338,27 +332,18 @@ export default function Indicators() {
 
             {/* Modal de Lista de Pacientes */}
             {showPatientListModal && selectedIndicator && (
-                <div 
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 50,
-                        padding: '1rem'
-                    }}
+                <div
+                    className="modal-shell"
                     onClick={() => setShowPatientListModal(false)}
                 >
                     <motion.div
-                        className="card"
+                        className="card modal-card"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         onClick={(e) => e.stopPropagation()}
-                        style={{ maxWidth: '700px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}
+                        style={{ maxWidth: '700px' }}
                     >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div className="modal-header">
                             <div>
                                 <h2 style={{ margin: 0, marginBottom: '0.5rem' }}>
                                     {indicatorDefinitions[selectedIndicator]?.name || selectedIndicator}
@@ -399,6 +384,7 @@ export default function Indicators() {
                                             borderRadius: '0.5rem',
                                             display: 'flex',
                                             alignItems: 'center',
+                                            flexWrap: 'wrap',
                                             gap: '1rem',
                                             backgroundColor: 'white'
                                         }}

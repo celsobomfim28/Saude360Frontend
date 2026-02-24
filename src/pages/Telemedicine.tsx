@@ -202,7 +202,7 @@ export default function Telemedicine() {
           {consultations && consultations.length > 0 ? (
             <>
               <div className="desktop-only table-scroll">
-                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '860px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)' }}>
                     <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Paciente</th>
@@ -367,7 +367,7 @@ export default function Telemedicine() {
           animate={{ opacity: 1, y: 0 }}
         >
           {certificates && certificates.length > 0 ? (
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               {certificates.map((certificate: any) => (
                 <div key={certificate.id} style={{ padding: '1.25rem', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
@@ -414,7 +414,7 @@ export default function Telemedicine() {
           >
             <h2 style={{ marginBottom: '1.5rem' }}>Agendar Teleconsulta</h2>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="form-grid">
               <div>
                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                   Paciente *

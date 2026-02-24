@@ -157,7 +157,7 @@ export default function Territorialization() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Territorialização
@@ -166,7 +166,7 @@ export default function Territorialization() {
             Visualização geográfica de indicadores e otimização de rotas
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="actions-wrap">
           <button
             onClick={() => setViewMode('heatmap')}
             className={viewMode === 'heatmap' ? 'btn btn-primary' : 'btn'}
@@ -189,13 +189,14 @@ export default function Territorialization() {
       </header>
 
       {/* Filtros */}
-      <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+      <div className="card glass filter-bar" style={{ justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <select
             value={selectedMicroArea}
             onChange={(e) => setSelectedMicroArea(e.target.value)}
             disabled={isACS}
-            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '200px' }}
+            className="filter-control"
+            style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
           >
             {isACS ? (
               <>
@@ -219,7 +220,8 @@ export default function Territorialization() {
             <select
               value={selectedIndicator}
               onChange={(e) => setSelectedIndicator(e.target.value)}
-              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '200px' }}
+              className="filter-control"
+              style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
             >
               {indicators.map((ind) => (
                 <option key={ind.value} value={ind.value}>
@@ -231,7 +233,7 @@ export default function Territorialization() {
         </div>
 
         {/* Botão de Geocodificação */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div className="actions-wrap">
           {geocodingStats && geocodingStats.pending > 0 && (
             <button
               onClick={handleGeocode}
@@ -263,7 +265,7 @@ export default function Territorialization() {
 
       {/* Mapa de Calor */}
       {viewMode === 'heatmap' && (
-        <div className="grid" style={{ gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+        <div className="dashboard-main-grid">
           <motion.div
             className="card"
             initial={{ opacity: 0, y: 20 }}
@@ -329,7 +331,7 @@ export default function Territorialization() {
         >
           <h3 style={{ marginBottom: '1.5rem' }}>Áreas de Risco Identificadas</h3>
           {riskAreas && riskAreas.length > 0 ? (
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+            <div className="responsive-cards-grid">
               {riskAreas.map((area: any, idx: number) => (
                 <div key={idx} style={{ 
                   padding: '1.25rem', 
@@ -371,7 +373,7 @@ export default function Territorialization() {
 
       {/* Cobertura Territorial */}
       {viewMode === 'coverage' && coverage && (
-        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+        <div className="responsive-cards-grid">
           <motion.div
             className="card"
             initial={{ opacity: 0, scale: 0.95 }}

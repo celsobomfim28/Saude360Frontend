@@ -198,7 +198,7 @@ export function Vaccines() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Calendário Vacinal
@@ -213,7 +213,7 @@ export function Vaccines() {
       </header>
 
       {/* Filtros por Grupo */}
-      <div className="card" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
+      <div className="card filter-bar">
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)' }}>Filtrar por grupo:</span>
           {[
@@ -250,7 +250,7 @@ export function Vaccines() {
 
       {/* Lista de Pacientes */}
       <div className="card" style={{ marginBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div className="filter-bar" style={{ marginBottom: '1rem', padding: 0 }}>
           <h3>
             {selectedGroup === 'ALL' && 'Todos os Pacientes'}
             {selectedGroup === 'CHILD' && 'Crianças Cadastradas'}
@@ -258,7 +258,7 @@ export function Vaccines() {
             {selectedGroup === 'ELDERLY' && 'Idosos Cadastrados'}
             {selectedGroup === 'WOMAN' && 'Mulheres Cadastradas'}
           </h3>
-          <div style={{ position: 'relative', width: '300px' }}>
+          <div className="filter-search">
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
@@ -273,7 +273,7 @@ export function Vaccines() {
         {loadingPatients ? (
           <LoadingSpinner message="Carregando pacientes..." />
         ) : patients && patients.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+          <div className="responsive-cards-grid">
             {patients.map((patient: any) => (
               <motion.button
                 key={patient.id}
@@ -340,24 +340,15 @@ export function Vaccines() {
 
       {/* Modal do Calendário Vacinal */}
       {showScheduleModal && selectedPatient && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50,
-          padding: '1rem'
-        }}
+        <div className="modal-shell" style={{ zIndex: 50 }}
         onClick={handleCloseSchedule}
         >
           <motion.div
-            className="card"
+            className="card modal-card"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: '900px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}
+            style={{ maxWidth: '900px' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1.5rem' }}>
               <div>
@@ -389,7 +380,7 @@ export function Vaccines() {
                   </p>
                 )}
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="actions-wrap">
                 <button
                   onClick={() => setShowApplicationModal(true)}
                   className="btn btn-primary"
@@ -415,7 +406,7 @@ export function Vaccines() {
                 {/* Resumo de Vacinas Pendentes */}
                 {pending && pending.summary && (
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <div className="grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                    <div className="summary-kpis-grid">
                       <div style={{ padding: '1rem', backgroundColor: '#fee2e2', borderRadius: '0.5rem' }}>
                         <p style={{ fontSize: '0.75rem', color: '#991b1b', margin: '0 0 0.25rem', textTransform: 'uppercase', fontWeight: 600 }}>Pendentes</p>
                         <p style={{ fontSize: '1.75rem', fontWeight: 700, color: '#991b1b', margin: 0 }}>{pending.summary.totalPending}</p>
@@ -488,21 +479,12 @@ export function Vaccines() {
 
       {/* Modal de Aplicação */}
       {showApplicationModal && (
-        <div style={{ 
-          position: 'fixed', 
-          inset: 0, 
-          backgroundColor: 'rgba(0,0,0,0.5)', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          zIndex: 1000, 
-          backdropFilter: 'blur(4px)' 
-        }}>
+        <div className="modal-shell" style={{ zIndex: 1000 }}>
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="card"
-            style={{ width: '100%', maxWidth: '500px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}
+            className="card modal-card"
+            style={{ maxWidth: '500px', padding: '2rem' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -554,7 +536,7 @@ export function Vaccines() {
                 </select>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-grid cols-2">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text)' }}>
                     Dose *
@@ -599,7 +581,7 @@ export function Vaccines() {
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+              <div className="modal-actions" style={{ marginTop: '0.5rem' }}>
                 <button
                   type="button"
                   onClick={() => {
@@ -609,7 +591,7 @@ export function Vaccines() {
                     setBatchNumber('');
                   }}
                   className="btn"
-                  style={{ flex: 1, padding: '0.75rem' }}
+                  style={{ padding: '0.75rem' }}
                 >
                   Cancelar
                 </button>
@@ -618,7 +600,6 @@ export function Vaccines() {
                   disabled={applyVaccineMutation.isPending || !selectedVaccineId}
                   className="btn btn-primary"
                   style={{ 
-                    flex: 1, 
                     padding: '0.75rem',
                     display: 'flex',
                     alignItems: 'center',

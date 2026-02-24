@@ -85,8 +85,8 @@ export default function PatientDetails() {
                 Voltar
             </button>
 
-            <header style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+            <header className="page-header" style={{ marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <div style={{ width: '80px', height: '80px', borderRadius: '24px', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 700 }}>
                         {patient?.fullName?.charAt(0) || '?'}
                     </div>
@@ -102,7 +102,7 @@ export default function PatientDetails() {
                         <p style={{ color: 'var(--text-muted)', margin: 0 }}>CPF: {patient.cpf} • CNS: {patient.cns} • {patient.age} anos</p>
                     </div>
                 </div>
-                <div style={{ display: 'flex', gap: '12px' }}>
+                <div className="actions-wrap">
                     <button onClick={() => setIsAppointmentModalOpen(true)} className="btn card" style={{ display: 'flex', gap: '8px' }}>
                         <Calendar size={20} />
                         Agendar
@@ -126,9 +126,9 @@ export default function PatientDetails() {
                 </div>
             </header>
 
-            <div className="grid" style={{ gridTemplateColumns: '1fr 3fr', gap: '2rem', alignItems: 'flex-start' }}>
+            <div className="split-layout" style={{ alignItems: 'flex-start' }}>
                 {/* Sidebar Info */}
-                <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <aside className="split-layout-aside" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <section className="card">
                         <h4 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <User size={18} color="var(--primary)" /> Dados Pessoais
@@ -197,9 +197,9 @@ export default function PatientDetails() {
                 </aside>
 
                 {/* Main Content Area */}
-                <main>
+                <main className="split-layout-main">
                     {/* Tabs */}
-                    <div className="card glass" style={{ padding: '0.5rem', marginBottom: '1.5rem', display: 'flex', gap: '8px' }}>
+                    <div className="card glass tabs-scroll" style={{ padding: '0.5rem', marginBottom: '1.5rem' }}>
                         {[
                             { id: 'clinical', label: 'Quadro Clínico', icon: Activity },
                             { id: 'indicators', label: 'Indicadores', icon: Clipboard },
@@ -274,7 +274,7 @@ export default function PatientDetails() {
                                     </div>
                                 </div>
 
-                                <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                <div className="form-grid cols-2" style={{ gap: '1.5rem' }}>
                                     {patient.hasHypertension && (
                                         <div className="card" style={{ borderTop: '4px solid #dc2626' }}>
                                             <h4 style={{ marginBottom: '1rem', color: '#dc2626' }}>Hipertensão</h4>
@@ -383,7 +383,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.prenatal && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>Pré-Natal</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'C1', label: 'Consultas', value: `${indicators.indicators.prenatal.prenatalConsultationCount}/7` },
                                                             { code: 'C2', label: 'Aferições PA', value: `${indicators.indicators.prenatal.bloodPressureCount}/7` },
@@ -412,7 +412,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.childcare && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: 'var(--accent)' }}>Puericultura</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'B1', label: '1ª Consulta', value: indicators.indicators.childcare.firstConsultationDate ? 'Realizada' : 'Pendente' },
                                                             { code: 'B2', label: 'Consultas', value: `${indicators.indicators.childcare.consultationCount}/9` },
@@ -440,7 +440,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.diabetes && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: '#dc2626' }}>Diabetes</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'D1', label: 'Consulta Anual', value: indicators.indicators.diabetes.lastConsultationDate ? 'Realizada' : 'Pendente' },
                                                             { code: 'D2', label: 'Aferição PA', value: indicators.indicators.diabetes.lastBloodPressureDate ? 'Realizada' : 'Pendente' },
@@ -469,7 +469,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.hypertension && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: '#ea580c' }}>Hipertensão</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'E1', label: 'Consulta Anual', value: indicators.indicators.hypertension.lastConsultationDate ? 'Realizada' : 'Pendente' },
                                                             { code: 'E2', label: 'Aferição PA', value: indicators.indicators.hypertension.lastBloodPressureDate ? 'Realizada' : 'Pendente' },
@@ -496,7 +496,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.elderly && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: '#7c3aed' }}>Idosos</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'F1', label: 'Consulta Anual', value: indicators.indicators.elderly.lastConsultationDate ? 'Realizada' : 'Pendente' },
                                                             { code: 'F2', label: 'Avaliação Funcional', value: indicators.indicators.elderly.lastFunctionalAssessmentDate ? 'Realizada' : 'Pendente' },
@@ -523,7 +523,7 @@ export default function PatientDetails() {
                                             {indicators.indicators.womanHealth && (
                                                 <section>
                                                     <h5 style={{ marginBottom: '1rem', color: '#ec4899' }}>Saúde da Mulher</h5>
-                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                    <div className="indicator-cards-grid">
                                                         {[
                                                             { code: 'G1', label: 'Citopatológico', value: indicators.indicators.womanHealth.lastCytopathologicalExamDate ? 'Realizado' : 'Pendente' },
                                                             { code: 'G2', label: 'Mamografia', value: indicators.indicators.womanHealth.lastMammographyDate ? 'Realizada' : 'Pendente' }
@@ -547,7 +547,7 @@ export default function PatientDetails() {
                                             {/* Summary */}
                                             <section className="card glass" style={{ padding: '1.5rem' }}>
                                                 <h5 style={{ marginBottom: '1rem' }}>Resumo Geral</h5>
-                                                <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
+                                                <div className="summary-kpis-grid">
                                                     <div style={{ textAlign: 'center' }}>
                                                         <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--status-green)' }}>{indicators.summary.green}</div>
                                                         <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-muted)' }}>Em Dia</p>
