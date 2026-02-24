@@ -121,7 +121,7 @@ body {
 .card {
   background: var(--card);
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
   border: 1px solid var(--border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
@@ -142,10 +142,14 @@ body {
 .container {
   width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.875rem;
 }
 
 @media (min-width: 768px) {
+  .card {
+    padding: 1.25rem;
+  }
+
   .container {
     padding: 1.5rem;
   }
@@ -161,6 +165,12 @@ body {
 .grid {
   display: grid;
   gap: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .flex {
@@ -288,7 +298,7 @@ textarea::placeholder {
 
 /* Layout */
 .app-shell {
-  display: flex;
+  display: block;
   min-height: 100vh;
 }
 
@@ -298,7 +308,7 @@ textarea::placeholder {
   position: sticky;
   top: 0;
   padding: 2rem 1.5rem;
-  display: flex;
+  display: none;
   flex-direction: column;
   z-index: 30;
 }
@@ -310,7 +320,14 @@ textarea::placeholder {
 }
 
 .app-topbar {
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--border);
 }
 
 .drawer-backdrop {
@@ -434,7 +451,9 @@ textarea::placeholder {
   .modal-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
+}
 
+@media (min-width: 1024px) {
   .mobile-only {
     display: none !important;
   }
@@ -442,31 +461,51 @@ textarea::placeholder {
   .desktop-only {
     display: block !important;
   }
-}
 
-@media (min-width: 1024px) {
+  .app-shell {
+    display: flex;
+  }
+
+  .app-sidebar {
+    display: flex;
+  }
+
+  .app-topbar {
+    display: none;
+  }
+
   .dashboard-main-grid {
     grid-template-columns: 2fr 1fr;
   }
 }
 
-@media (max-width: 1023px) {
-  .app-shell {
-    display: block;
+.pagination-bar {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.pagination-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 767px) {
+  .pagination-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .app-sidebar {
-    display: none;
+  .pagination-actions {
+    width: 100%;
   }
 
-  .app-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    border-bottom: 1px solid var(--border);
+  .pagination-actions .btn {
+    flex: 1;
+    justify-content: center;
   }
 }

@@ -356,9 +356,9 @@ export default function Patients() {
 
                         {/* Pagination */}
                         {patients.length > 0 && (
-                            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                <p>Mostrando {patients.length} de {pagination.total || 0} pacientes</p>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <div className="pagination-bar">
+                                <p style={{ margin: 0 }}>Mostrando {patients.length} de {pagination.total || 0} pacientes</p>
+                                <div className="pagination-actions">
                                     <button
                                         disabled={page === 1}
                                         onClick={() => setPage(p => p - 1)}
