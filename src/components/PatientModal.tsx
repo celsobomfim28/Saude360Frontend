@@ -303,16 +303,16 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)', padding: '1rem' }}>
+        <div className="modal-shell" style={{ zIndex: 100 }}>
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="card"
-                style={{ width: '100%', maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto', padding: 0 }}
+                className="card modal-card"
+                style={{ maxWidth: '750px', padding: 0 }}
             >
                 {/* Header */}
-                <div style={{ padding: '1.5rem 2rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'white', zIndex: 10 }}>
+                <div style={{ padding: '1rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', position: 'sticky', top: 0, background: 'var(--card)', zIndex: 10 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ backgroundColor: 'var(--primary)10', padding: '10px', borderRadius: '12px' }}>
                             <User size={24} color="var(--primary)" />
@@ -335,7 +335,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                     />
                 </div>
 
-                <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} style={{ padding: '2rem' }}>
+                <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} style={{ padding: '1rem' }}>
                     <AnimatePresence mode="wait">
                         {step === 1 && (
                             <motion.div
@@ -349,7 +349,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                     <User size={16} /> Dados Identificadores
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                                <div className="modal-grid-2" style={{ gap: '1.25rem' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Nome Completo</label>
                                         <input style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }} value={formData.fullName} onChange={e => handleInputChange('fullName', e.target.value)} />
@@ -382,7 +382,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', fontWeight: 700, fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '1rem' }}>
                                     <Phone size={16} /> Contato
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.25rem' }}>
+                                <div className="modal-grid-3" style={{ gap: '1.25rem' }}>
                                     <div style={{ gridColumn: 'span 1' }}>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Telefone Principal</label>
                                         <input style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }} value={formData.primaryPhone} onChange={e => handleInputChange('primaryPhone', e.target.value)} />
@@ -411,7 +411,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                     <MapPin size={16} /> Localização e Vínculo
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                                <div className="modal-grid-2" style={{ gap: '1.25rem' }}>
                                     <div style={{ gridColumn: 'span 2' }}>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Microárea de Atendimento</label>
                                         <select style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }} value={formData.microAreaId} onChange={e => handleInputChange('microAreaId', e.target.value)}>
@@ -457,7 +457,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                                     <ClipboardList size={16} /> Critérios de Inclusão (Elegibilidade)
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                                <div className="modal-grid-2" style={{ gap: '1.25rem' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                         <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>
                                             <input type="checkbox" checked={formData.eligibilityCriteria.hasHypertension} onChange={e => handleEligibilityChange('hasHypertension', e.target.checked)} />
@@ -505,7 +505,7 @@ export default function PatientModal({ isOpen, onClose }: PatientModalProps) {
                     </AnimatePresence>
 
                     {/* Footer Actions */}
-                    <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                    <div className="modal-actions" style={{ marginTop: '2rem' }}>
                         {step > 1 && (
                             <button type="button" onClick={() => setStep(s => s - 1)} className="btn" style={{ background: 'var(--background)', color: 'var(--text)' }}>
                                 Voltar

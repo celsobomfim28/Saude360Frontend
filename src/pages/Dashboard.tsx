@@ -133,7 +133,7 @@ export default function Dashboard() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <motion.h1
                         initial={{ opacity: 0, x: -20 }}
@@ -143,12 +143,12 @@ export default function Dashboard() {
                     </motion.h1>
                     <p style={{ color: 'var(--text-muted)' }}>Bem-vindo ao Painel de Gestão da Unidade Saúde 360</p>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className="page-header-actions" style={{ alignItems: 'center' }}>
                     {user?.role !== 'ACS' && (
-                        <div className="card glass" style={{ padding: '0.5rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                        <div className="card glass filter-bar" style={{ marginBottom: 0, padding: '0.5rem' }}>
                             <select
                                 className="input"
-                                style={{ padding: '0.4rem 2rem 0.4rem 0.75rem', fontSize: '0.875rem', border: 'none', background: 'transparent' }}
+                                style={{ padding: '0.4rem 2rem 0.4rem 0.75rem', fontSize: '0.875rem', border: 'none', background: 'transparent', width: '100%' }}
                                 value={filterType}
                                 onChange={(e) => {
                                     setFilterType(e.target.value);
@@ -163,7 +163,7 @@ export default function Dashboard() {
                             {filterType !== 'unit' && (
                                 <select
                                     className="input"
-                                    style={{ padding: '0.4rem 2rem 0.4rem 0.75rem', fontSize: '0.875rem', border: 'none', background: 'var(--background)' }}
+                                    style={{ padding: '0.4rem 2rem 0.4rem 0.75rem', fontSize: '0.875rem', border: 'none', background: 'var(--background)', width: '100%' }}
                                     value={selectedId}
                                     onChange={(e) => setSelectedId(e.target.value)}
                                 >
@@ -228,7 +228,7 @@ export default function Dashboard() {
                         ))}
                     </div>
 
-                    <div className="grid" style={{ gridTemplateColumns: '2fr 1fr' }}>
+                    <div className="dashboard-main-grid">
                 {/* Main Chart */}
                 <motion.div
                     className="card"

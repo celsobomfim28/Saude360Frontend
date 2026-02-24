@@ -54,14 +54,14 @@ export default function AppointmentModal({ isOpen, onClose, patientId, patientNa
     if (!isOpen) return null;
 
     return (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(4px)' }}>
+        <div className="modal-shell">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="card"
-                style={{ width: '100%', maxWidth: '500px', padding: '2rem' }}
+                className="card modal-card"
+                style={{ maxWidth: '500px', padding: '1.25rem' }}
             >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className="modal-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ padding: '8px', borderRadius: '12px', backgroundColor: 'var(--primary)15', color: 'var(--primary)' }}>
                             <Calendar size={24} />
@@ -76,8 +76,8 @@ export default function AppointmentModal({ isOpen, onClose, patientId, patientNa
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div className="modal-grid-2">
                         <div>
                             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                                 Data
@@ -154,7 +154,7 @@ export default function AppointmentModal({ isOpen, onClose, patientId, patientNa
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <div className="modal-actions">
                         <button
                             type="button"
                             onClick={onClose}

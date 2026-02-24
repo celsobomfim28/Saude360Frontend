@@ -80,7 +80,7 @@ export default function Appointments() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                         Consultas Agendadas
@@ -92,13 +92,14 @@ export default function Appointments() {
             </header>
 
             {/* Filters Bar */}
-            <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+            <div className="card glass filter-bar">
+                <div className="filter-search">
                     <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={18} />
                     <input
                         type="text"
                         placeholder="Buscar por nome do paciente..."
-                        style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
+                        className="filter-control"
+                        style={{ padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -106,7 +107,8 @@ export default function Appointments() {
                 <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+                    className="filter-control"
+                    style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                 >
                     <option value="ALL">Todos os Status</option>
                     <option value="SCHEDULED">Agendadas</option>
@@ -118,14 +120,15 @@ export default function Appointments() {
                     type="date"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white', minWidth: '150px' }}
+                    className="filter-control"
+                    style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                 />
             </div>
 
             {filteredAppointments && filteredAppointments.length > 0 ? (
                 <div className="card">
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <div className="desktop-only" style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '860px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--border)' }}>
                                     <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Data/Hora</th>
@@ -186,6 +189,40 @@ export default function Appointments() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="mobile-only mobile-card-list">
+                        {filteredAppointments.map((apt: any) => (
+                            <div className="mobile-card" key={`mobile-${apt.id}`}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                    <div>
+                                        <p style={{ margin: 0, fontWeight: 700 }}>{apt.patient?.fullName || 'N/A'}</p>
+                                        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>{getTypeLabel(apt.type)}</p>
+                                    </div>
+                                    {getStatusBadge(apt.status)}
+                                </div>
+
+                                <div className="mobile-card-row">
+                                    <span className="mobile-card-label">Data/Hora</span>
+                                    <span>
+                                        {new Date(apt.scheduledDate).toLocaleDateString('pt-BR')} {new Date(apt.scheduledDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                </div>
+
+                                <div className="mobile-card-row">
+                                    <span className="mobile-card-label">Motivo</span>
+                                    <span style={{ textAlign: 'right' }}>{apt.reason || '-'}</span>
+                                </div>
+
+                                <button
+                                    onClick={() => navigate(`/patients/${apt.patientId}`)}
+                                    className="btn"
+                                    style={{ width: '100%', marginTop: '0.75rem', justifyContent: 'center' }}
+                                >
+                                    Ver Paciente
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 </div>
             ) : (

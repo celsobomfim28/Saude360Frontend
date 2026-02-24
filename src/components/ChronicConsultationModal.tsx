@@ -69,14 +69,14 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
     if (!isOpen) return null;
 
     return (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(4px)' }}>
+        <div className="modal-shell">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="card"
-                style={{ width: '100%', maxWidth: '600px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}
+                className="card modal-card"
+                style={{ maxWidth: '600px', padding: '1.25rem' }}
             >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div className="modal-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ padding: '8px', borderRadius: '12px', backgroundColor: 'var(--primary)15', color: 'var(--primary)' }}>
                             <Stethoscope size={24} />
@@ -89,7 +89,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
                     <button onClick={onClose} className="btn" style={{ padding: '8px', backgroundColor: 'transparent' }}><X size={20} /></button>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <section>
                         <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}><Activity size={18} color="var(--primary)" /> Dados Vitais</h4>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
@@ -109,7 +109,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
                         </div>
 
                         {type === 'HYPERTENSION' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                            <div className="modal-grid-2" style={{ marginTop: '1rem' }}>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>PA Sistólica (mmHg)</label>
                                     <input
@@ -137,7 +137,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
 
                         {type === 'DIABETES' && (
                             <>
-                                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                                <div className="modal-grid-2" style={{ marginTop: '1rem' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Glicemia (mg/dL)</label>
                                         <input
@@ -161,7 +161,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
                                         </select>
                                     </div>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+                                <div className="modal-grid-2" style={{ marginTop: '1rem' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>HbA1c (%)</label>
                                         <input
@@ -190,7 +190,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
 
                     <section>
                         <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}><Scale size={18} color="var(--primary)" /> Antropometria</h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="modal-grid-2">
                             <div>
                                 <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Peso (kg)</label>
                                 <input
@@ -237,7 +237,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
                         </div>
                     </section>
 
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <div className="modal-actions">
                         <button type="button" onClick={onClose} className="btn" style={{ flex: 1, backgroundColor: 'var(--background)' }}>Cancelar</button>
                         <button
                             type="submit"

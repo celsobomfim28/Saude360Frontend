@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -18,7 +19,9 @@ import {
     Video,
     FileText,
     Sun,
-    Moon
+    Moon,
+    Menu,
+    X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -31,13 +34,17 @@ export default function RootLayout() {
     const { theme, toggleTheme } = useThemeStore();
     const navigate = useNavigate();
     const unreadCount = useUnreadCount();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useNotificationToasts();
 
     const handleLogout = () => {
+        setIsMobileMenuOpen(false);
         logout();
         navigate('/login');
     };
+
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
     const navItems = [
         { label: 'Visão Geral', to: '/', icon: LayoutDashboard },
@@ -65,10 +72,110 @@ export default function RootLayout() {
         ? user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
         : '??';
 
+    const renderNavItems = (isMobile = false) => (
+        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: isMobile ? '1rem' : 0 }}>
+            {navItems.map((item) => (
+                <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={isMobile ? closeMobileMenu : undefined}
+                    style={({ isActive }) => ({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        padding: '0.625rem 0.625rem',
+                        borderRadius: '0.625rem',
+                        textDecoration: 'none',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                        transition: 'all 0.2s',
+                        color: isActive ? 'white' : 'var(--text-muted)',
+                        backgroundColor: isActive ? 'var(--primary)' : 'transparent',
+                        boxShadow: isActive ? '0 4px 12px rgba(30, 58, 138, 0.2)' : 'none',
+                        position: 'relative'
+                    })}
+                >
+                    <item.icon size={18} />
+                    {item.label}
+                    {item.to === '/notifications' && unreadCount > 0 && (
+                        <span style={{
+                            position: 'absolute',
+                            right: '0.875rem',
+                            backgroundColor: 'var(--danger)',
+                            color: 'white',
+                            fontSize: '0.7rem',
+                            fontWeight: '700',
+                            padding: '0.125rem 0.4rem',
+                            borderRadius: '9999px',
+                            minWidth: '18px',
+                            textAlign: 'center'
+                        }}>
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                    )}
+                </NavLink>
+            ))}
+        </nav>
+    );
+
     return (
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <div className="app-shell">
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <>
+                        <motion.div
+                            className="drawer-backdrop"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={closeMobileMenu}
+                        />
+                        <motion.aside
+                            className="drawer-panel glass"
+                            initial={{ x: -32, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: -32, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ backgroundColor: 'var(--primary)', padding: '8px', borderRadius: '10px' }}>
+                                        <Stethoscope color="white" size={18} />
+                                    </div>
+                                    <strong style={{ color: 'var(--primary)' }}>Saúde 360</strong>
+                                </div>
+                                <button className="btn" style={{ padding: '8px', background: 'transparent' }} onClick={closeMobileMenu}>
+                                    <X size={18} />
+                                </button>
+                            </div>
+
+                            {renderNavItems(true)}
+
+                            <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+                                <button
+                                    onClick={toggleTheme}
+                                    className="btn"
+                                    style={{ width: '100%', justifyContent: 'flex-start', backgroundColor: 'var(--card-soft)', color: 'var(--text)', marginBottom: '0.75rem' }}
+                                >
+                                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                                    {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="btn"
+                                    style={{ width: '100%', justifyContent: 'flex-start', color: 'var(--danger)', backgroundColor: 'transparent' }}
+                                >
+                                    <LogOut size={18} />
+                                    Sair do Sistema
+                                </button>
+                            </div>
+                        </motion.aside>
+                    </>
+                )}
+            </AnimatePresence>
+
             {/* Sidebar */}
-            <aside className="glass" style={{ width: '280px', height: '100vh', position: 'sticky', top: 0, padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', zIndex: 50 }}>
+            <aside className="glass app-sidebar">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '3rem' }}>
                     <div style={{ backgroundColor: 'var(--primary)', padding: '10px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(30, 58, 138, 0.3)' }}>
                         <Stethoscope color="white" size={28} />
@@ -79,48 +186,7 @@ export default function RootLayout() {
                     </div>
                 </div>
 
-                <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    {navItems.map((item) => (
-                        <NavLink
-                            key={item.to}
-                            to={item.to}
-                            style={({ isActive }) => ({
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                padding: '0.625rem 0.625rem',
-                                borderRadius: '0.625rem',
-                                textDecoration: 'none',
-                                fontSize: '0.875rem',
-                                fontWeight: 600,
-                                transition: 'all 0.2s',
-                                color: isActive ? 'white' : 'var(--text-muted)',
-                                backgroundColor: isActive ? 'var(--primary)' : 'transparent',
-                                boxShadow: isActive ? '0 4px 12px rgba(30, 58, 138, 0.2)' : 'none',
-                                position: 'relative'
-                            })}
-                        >
-                            <item.icon size={18} />
-                            {item.label}
-                            {item.to === '/notifications' && unreadCount > 0 && (
-                                <span style={{
-                                    position: 'absolute',
-                                    right: '0.875rem',
-                                    backgroundColor: 'var(--danger)',
-                                    color: 'white',
-                                    fontSize: '0.7rem',
-                                    fontWeight: '700',
-                                    padding: '0.125rem 0.4rem',
-                                    borderRadius: '9999px',
-                                    minWidth: '18px',
-                                    textAlign: 'center'
-                                }}>
-                                    {unreadCount > 99 ? '99+' : unreadCount}
-                                </span>
-                            )}
-                        </NavLink>
-                    ))}
-                </nav>
+                {renderNavItems()}
 
                 <div style={{ marginTop: 'auto', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
                     <button
@@ -159,8 +225,28 @@ export default function RootLayout() {
             </aside >
 
             {/* Main Content */}
-            < main style={{ flex: 1, backgroundColor: 'var(--background)' }
-            }>
+            <main className="app-main">
+                <header className="app-topbar glass">
+                    <button className="btn" style={{ background: 'transparent', padding: '0.5rem' }} onClick={() => setIsMobileMenuOpen(true)}>
+                        <Menu size={20} />
+                    </button>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ backgroundColor: 'var(--primary)', padding: '6px', borderRadius: '8px' }}>
+                            <Stethoscope color="white" size={16} />
+                        </div>
+                        <strong style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>Saúde 360</strong>
+                    </div>
+
+                    <button
+                        onClick={toggleTheme}
+                        className="btn"
+                        style={{ backgroundColor: 'var(--card-soft)', color: 'var(--text)', padding: '0.5rem 0.625rem' }}
+                    >
+                        {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+                </header>
+
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={window.location.pathname}
@@ -172,7 +258,7 @@ export default function RootLayout() {
                         <Outlet />
                     </motion.div>
                 </AnimatePresence>
-            </main >
-        </div >
+            </main>
+        </div>
     );
 }

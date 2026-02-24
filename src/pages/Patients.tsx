@@ -81,7 +81,7 @@ export default function Patients() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <h1>Gestão de Pacientes</h1>
                     <p style={{ color: 'var(--text-muted)' }}>
@@ -91,10 +91,12 @@ export default function Patients() {
                         }
                     </p>
                 </div>
-                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">
-                    <Plus size={20} />
-                    Cadastrar Paciente
-                </button>
+                <div className="page-header-actions">
+                    <button onClick={() => setIsModalOpen(true)} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+                        <Plus size={20} />
+                        Cadastrar Paciente
+                    </button>
+                </div>
             </header>
 
             <PatientModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
@@ -106,13 +108,14 @@ export default function Patients() {
             />
 
             {/* Filters Bar */}
-            <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
+            <div className="card glass filter-bar">
+                <div className="filter-search">
                     <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={18} />
                     <input
                         type="text"
                         placeholder="Buscar por nome, CPF ou CNS..."
-                        style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
+                        className="filter-control"
+                        style={{ padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -121,6 +124,8 @@ export default function Patients() {
                     onClick={() => setIsFiltersOpen(true)}
                     className="btn card"
                     style={{
+                        width: '100%',
+                        justifyContent: 'center',
                         padding: '0.75rem 1rem',
                         display: 'flex',
                         gap: '8px',
@@ -154,7 +159,7 @@ export default function Patients() {
             </div>
 
             {/* Status Legend */}
-            <div style={{ marginBottom: '1rem', display: 'flex', gap: '1.5rem', alignItems: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+            <div className="legend-wrap">
                 <span style={{ fontWeight: 600 }}>Legenda do Status Geral:</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <div className="status-dot red"></div>
@@ -192,7 +197,8 @@ export default function Patients() {
                     />
                 ) : (
                     <>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                        <div className="desktop-only" style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '920px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--background)', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
                                     <th style={{ padding: '1rem' }}>Paciente</th>
@@ -289,6 +295,64 @@ export default function Patients() {
                                 ) : null}
                             </tbody>
                         </table>
+                        </div>
+
+                        <div className="mobile-only mobile-card-list">
+                            {patients.map((patient: any) => (
+                                <div key={patient.id} className="mobile-card">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
+                                        <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+                                            {patient.fullName.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p style={{ fontWeight: 700, margin: 0, fontSize: '0.95rem' }}>{patient.fullName}</p>
+                                            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.8rem' }}>{patient.age} anos • Área {patient.microArea.name}</p>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                        {patient.eligibilityGroups.map((g: string) => (
+                                            <span key={g} style={{ fontSize: '0.625rem', padding: '2px 8px', borderRadius: '20px', background: 'var(--primary)10', color: 'var(--primary)', fontWeight: 600 }}>
+                                                {translateGroup(g)}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    <div className="mobile-card-row">
+                                        <span className="mobile-card-label">Status</span>
+                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                            {patient.indicatorsSummary.red > 0 && <><div className="status-dot red"></div><span>{patient.indicatorsSummary.red}</span></>}
+                                            {patient.indicatorsSummary.yellow > 0 && <><div className="status-dot yellow"></div><span>{patient.indicatorsSummary.yellow}</span></>}
+                                            {patient.indicatorsSummary.green > 0 && <><div className="status-dot green"></div><span>{patient.indicatorsSummary.green}</span></>}
+                                            {patient.indicatorsSummary.red === 0 && patient.indicatorsSummary.yellow === 0 && patient.indicatorsSummary.green === 0 && (
+                                                <span style={{ color: 'var(--text-muted)' }}>Sem indicadores</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="mobile-card-row">
+                                        <span className="mobile-card-label">Última consulta</span>
+                                        <span>{patient.lastConsultation ? new Date(patient.lastConsultation).toLocaleDateString('pt-BR') : 'Sem registro'}</span>
+                                    </div>
+
+                                    <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
+                                        <button
+                                            onClick={() => navigate(`/patients/${patient.id}`)}
+                                            className="btn"
+                                            style={{ flex: 1, justifyContent: 'center', padding: '0.625rem' }}
+                                        >
+                                            <Eye size={16} /> Ver
+                                        </button>
+                                        <div style={{ flex: 1 }}>
+                                            <PatientActionsMenu
+                                                patientId={patient.id}
+                                                patientName={patient.fullName}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
                         {/* Pagination */}
                         {patients.length > 0 && (
