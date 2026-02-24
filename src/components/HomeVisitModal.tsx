@@ -13,6 +13,8 @@ interface HomeVisitModalProps {
 
 export default function HomeVisitModal({ isOpen, onClose, patientId, patientName }: HomeVisitModalProps) {
     const queryClient = useQueryClient();
+    const toIsoNoon = (dateStr: string) => `${dateStr}T12:00:00.000Z`;
+    const isValidDateInput = (dateStr: string) => /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !Number.isNaN(new Date(`${dateStr}T12:00:00.000Z`).getTime());
     const [formData, setFormData] = useState({
         visitDate: new Date().toISOString().split('T')[0],
         visitType: 'ROUTINE',
@@ -32,7 +34,7 @@ export default function HomeVisitModal({ isOpen, onClose, patientId, patientName
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
-            const visitDateTime = `${data.visitDate}T12:00:00.000Z`;
+            const visitDateTime = toIsoNoon(data.visitDate);
             
             // Construir observações com procedimentos
             let fullObservations = data.observations || '';
@@ -46,7 +48,7 @@ export default function HomeVisitModal({ isOpen, onClose, patientId, patientName
                 fullObservations += (fullObservations ? '\n\n' : '') + 'Procedimentos realizados:\n' + procedures.join('\n');
             }
             
-            return await api.post('/home-visits', {
+            await api.post('/home-visits', {
                 patientId,
                 visitDate: visitDateTime,
                 visitType: data.visitType,
@@ -58,6 +60,35 @@ export default function HomeVisitModal({ isOpen, onClose, patientId, patientName
                 environmentalAssessment: data.environmentalAssessment,
                 referralMade: data.referralMade
             });
+
+            const anthropometryPayload =
+                data.weight && data.height
+                    ? {
+                        patientId,
+                        measurementDate: visitDateTime,
+                        weight: parseFloat(data.weight),
+                        height: parseFloat(data.height),
+                        observations: data.observations || undefined
+                    }
+                    : null;
+
+            const bloodPressurePayload =
+                data.systolicBP && data.diastolicBP
+                    ? {
+                        patientId,
+                        measurementDate: visitDateTime,
+                        systolicBP: parseInt(data.systolicBP),
+                        diastolicBP: parseInt(data.diastolicBP),
+                        observations: data.observations || undefined
+                    }
+                    : null;
+
+            if (anthropometryPayload) {
+                await api.post('/shared-actions/anthropometry', anthropometryPayload);
+            }
+            if (bloodPressurePayload) {
+                await api.post('/shared-actions/blood-pressure', bloodPressurePayload);
+            }
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['patient', patientId] });
@@ -83,6 +114,12 @@ export default function HomeVisitModal({ isOpen, onClose, patientId, patientName
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!isValidDateInput(formData.visitDate)) {
+            alert('Informe uma data válida no formato AAAA-MM-DD.');
+            return;
+        }
+
         mutation.mutate(formData);
     };
 
@@ -125,6 +162,9 @@ export default function HomeVisitModal({ isOpen, onClose, patientId, patientName
                                 max={new Date().toISOString().split('T')[0]}
                                 style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                             />
+                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                Aceita registro retroativo (data real da visita).
+                            </p>
                         </div>
                         <div>
                             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>

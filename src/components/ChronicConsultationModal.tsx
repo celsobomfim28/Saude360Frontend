@@ -21,6 +21,7 @@ interface ChronicConsultationModalProps {
 
 export default function ChronicConsultationModal({ isOpen, onClose, patientId, patientName, type }: ChronicConsultationModalProps) {
     const queryClient = useQueryClient();
+    const toIsoNoon = (dateStr: string) => `${dateStr}T12:00:00.000Z`;
     const [formData, setFormData] = useState<any>({
         consultationDate: new Date().toISOString().split('T')[0],
         systolicBP: '',
@@ -42,6 +43,7 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
             return await api.post(endpoint, {
                 ...data,
                 patientId,
+                consultationDate: toIsoNoon(data.consultationDate),
                 // Convert numeric strings to numbers
                 systolicBP: data.systolicBP ? parseInt(data.systolicBP) : undefined,
                 diastolicBP: data.diastolicBP ? parseInt(data.diastolicBP) : undefined,
@@ -100,6 +102,9 @@ export default function ChronicConsultationModal({ isOpen, onClose, patientId, p
                                     onChange={(e) => setFormData({ ...formData, consultationDate: e.target.value })}
                                     style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                                 />
+                                <p style={{ margin: '0.5rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                    Aceita registro retroativo (data real do atendimento).
+                                </p>
                             </div>
                         </div>
 

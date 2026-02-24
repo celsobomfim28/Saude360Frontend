@@ -31,6 +31,12 @@ export function Vaccines() {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
 
+  const isValidDateTimeLocal = (value: string) => {
+    if (!value) return false;
+    const parsed = new Date(value);
+    return !Number.isNaN(parsed.getTime());
+  };
+
   // Buscar catálogo de vacinas
   const { data: vaccines, isLoading: loadingVaccines } = useQuery({
     queryKey: ['vaccines'],
@@ -130,6 +136,11 @@ export function Vaccines() {
   const handleApplyVaccine = () => {
     if (!selectedPatientId || !selectedVaccineId) {
       alert('Selecione um paciente e uma vacina');
+      return;
+    }
+
+    if (!isValidDateTimeLocal(applicationDate)) {
+      alert('Informe uma data/hora de aplicação válida.');
       return;
     }
 
@@ -581,9 +592,11 @@ export function Vaccines() {
                   required
                   value={applicationDate}
                   onChange={(e) => setApplicationDate(e.target.value)}
-                  max={new Date().toISOString().slice(0, 16)}
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'white' }}
                 />
+                <p style={{ margin: '0.5rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  Aceita registro retroativo (data/hora real da aplicação).
+                </p>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
