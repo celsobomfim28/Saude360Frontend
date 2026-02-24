@@ -549,7 +549,7 @@ export default function Reports() {
           <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
             Detalhamento por Profissional
           </h3>
-          <div className="card" style={{ padding: '1.5rem', overflowX: 'auto' }}>
+          <div className="card table-scroll" style={{ padding: '1.5rem' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)' }}>
@@ -605,7 +605,7 @@ export default function Reports() {
           </h3>
 
           {data.visits?.length > 0 ? (
-            <div className="card" style={{ padding: '1.5rem', overflowX: 'auto' }}>
+            <div className="card table-scroll" style={{ padding: '1.5rem' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)' }}>
@@ -833,7 +833,7 @@ export default function Reports() {
   };
 
   return (
-    <div className="container" style={{ padding: '2rem' }}>
+    <div className="container">
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: '600', color: 'var(--text)', marginBottom: '0.5rem' }}>
           Relatórios
@@ -843,8 +843,8 @@ export default function Reports() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: selectedReport ? '300px 1fr' : '1fr', gap: '2rem' }}>
-        <div>
+      <div className="split-layout">
+        <div className="split-layout-aside">
           <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
             Relatórios Disponíveis
           </h2>
@@ -899,7 +899,7 @@ export default function Reports() {
         </div>
 
         {selectedReport && (
-          <div>
+          <div className="split-layout-main">
             <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                 <FileText size={24} color="var(--primary)" />
@@ -915,7 +915,7 @@ export default function Reports() {
 
               {renderFilters()}
 
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div className="actions-wrap">
                 <button
                   className="btn btn-primary"
                   onClick={handleGenerateReport}
@@ -965,19 +965,8 @@ export default function Reports() {
       </div>
 
       {showSaveFilterModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-        }}>
-          <div className="card" style={{ padding: '2rem', maxWidth: '400px', width: '90%' }}>
+        <div className="modal-shell" style={{ zIndex: 1000 }}>
+          <div className="card modal-card" style={{ padding: '2rem', maxWidth: '400px' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem' }}>
               Salvar Filtros
             </h3>

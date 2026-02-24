@@ -77,15 +77,17 @@ export default function Users() {
 
     return (
         <div className="container">
-            <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="page-header">
                 <div>
                     <h1>Gestão de Equipe</h1>
                     <p style={{ color: 'var(--text-muted)' }}>Gerencie os profissionais de saúde e seus acessos</p>
                 </div>
-                <button onClick={() => setIsAddingUser(true)} className="btn btn-primary" style={{ display: 'flex', gap: '8px' }}>
-                    <UserPlus size={20} />
-                    Novo Profissional
-                </button>
+                <div className="page-header-actions">
+                    <button onClick={() => setIsAddingUser(true)} className="btn btn-primary" style={{ display: 'flex', gap: '8px' }}>
+                        <UserPlus size={20} />
+                        Novo Profissional
+                    </button>
+                </div>
             </header>
 
             <div className="card glass" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
@@ -111,32 +113,102 @@ export default function Users() {
                         <Loader2 className="animate-spin" size={32} color="var(--primary)" />
                     </div>
                 ) : (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '2px solid var(--background)', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                <th style={{ padding: '1rem' }}>Profissional</th>
-                                <th>Cargo / Função</th>
-                                <th>Documento (CPF)</th>
-                                <th>Status</th>
-                                <th style={{ textAlign: 'right', paddingRight: '1rem' }}>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <>
+                        <div className="desktop-only table-scroll">
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                    <tr style={{ borderBottom: '2px solid var(--background)', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+                                        <th style={{ padding: '1rem' }}>Profissional</th>
+                                        <th>Cargo / Função</th>
+                                        <th>Documento (CPF)</th>
+                                        <th>Status</th>
+                                        <th style={{ textAlign: 'right', paddingRight: '1rem' }}>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {!filteredUsers || filteredUsers.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                                {searchTerm ? 'Nenhum profissional encontrado com esse critério de busca.' : 'Nenhum profissional cadastrado ainda.'}
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        filteredUsers.map((user: any) => (
+                                            <tr key={user.id} style={{ borderBottom: '1px solid var(--background)' }}>
+                                                <td style={{ padding: '1.25rem 1rem' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                        <div style={{
+                                                            width: '40px',
+                                                            height: '40px',
+                                                            borderRadius: '12px',
+                                                            backgroundColor: 'var(--primary)10',
+                                                            color: 'var(--primary)',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            {user.fullName.charAt(0)}
+                                                        </div>
+                                                        <div>
+                                                            <p style={{ fontWeight: 600 }}>{user.fullName}</p>
+                                                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.email || 'Sem e-mail'}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                        <Shield size={14} color="var(--primary)" />
+                                                        <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user.role}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{user.cpf}</span>
+                                                </td>
+                                                <td>
+                                                    {user.isActive ? (
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--success)', fontSize: '0.75rem', fontWeight: 600 }}>
+                                                            <CheckCircle size={14} /> Ativo
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--danger)', fontSize: '0.75rem', fontWeight: 600 }}>
+                                                            <XCircle size={14} /> Inativo
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td style={{ textAlign: 'right', paddingRight: '1rem' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                                        <button
+                                                            onClick={() => setEditingUser(user)}
+                                                            className="btn"
+                                                            style={{ padding: '8px', color: 'var(--primary)', backgroundColor: 'var(--primary)10' }}
+                                                        >
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                        <button className="btn" style={{ padding: '8px', color: 'var(--danger)', backgroundColor: 'var(--danger)10' }}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="mobile-only mobile-card-list">
                             {!filteredUsers || filteredUsers.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                                        {searchTerm ? 'Nenhum profissional encontrado com esse critério de busca.' : 'Nenhum profissional cadastrado ainda.'}
-                                    </td>
-                                </tr>
+                                <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>
+                                    {searchTerm ? 'Nenhum profissional encontrado com esse critério de busca.' : 'Nenhum profissional cadastrado ainda.'}
+                                </p>
                             ) : (
                                 filteredUsers.map((user: any) => (
-                                <tr key={user.id} style={{ borderBottom: '1px solid var(--background)' }}>
-                                    <td style={{ padding: '1.25rem 1rem' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div key={`mobile-${user.id}`} className="mobile-card">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
                                             <div style={{
-                                                width: '40px',
-                                                height: '40px',
-                                                borderRadius: '12px',
+                                                width: '36px',
+                                                height: '36px',
+                                                borderRadius: '10px',
                                                 backgroundColor: 'var(--primary)10',
                                                 color: 'var(--primary)',
                                                 display: 'flex',
@@ -147,62 +219,58 @@ export default function Users() {
                                                 {user.fullName.charAt(0)}
                                             </div>
                                             <div>
-                                                <p style={{ fontWeight: 600 }}>{user.fullName}</p>
-                                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user.email || 'Sem e-mail'}</p>
+                                                <p style={{ margin: 0, fontWeight: 700 }}>{user.fullName}</p>
+                                                <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>{user.email || 'Sem e-mail'}</p>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <Shield size={14} color="var(--primary)" />
-                                            <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user.role}</span>
+
+                                        <div className="mobile-card-row">
+                                            <span className="mobile-card-label">Função</span>
+                                            <span>{user.role}</span>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{user.cpf}</span>
-                                    </td>
-                                    <td>
-                                        {user.isActive ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--success)', fontSize: '0.75rem', fontWeight: 600 }}>
-                                                <CheckCircle size={14} /> Ativo
-                                            </div>
-                                        ) : (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--danger)', fontSize: '0.75rem', fontWeight: 600 }}>
-                                                <XCircle size={14} /> Inativo
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td style={{ textAlign: 'right', paddingRight: '1rem' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                        <div className="mobile-card-row">
+                                            <span className="mobile-card-label">CPF</span>
+                                            <span>{user.cpf}</span>
+                                        </div>
+                                        <div className="mobile-card-row">
+                                            <span className="mobile-card-label">Status</span>
+                                            {user.isActive ? (
+                                                <span style={{ color: 'var(--success)', fontWeight: 700 }}>Ativo</span>
+                                            ) : (
+                                                <span style={{ color: 'var(--danger)', fontWeight: 700 }}>Inativo</span>
+                                            )}
+                                        </div>
+
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
                                             <button
                                                 onClick={() => setEditingUser(user)}
                                                 className="btn"
-                                                style={{ padding: '8px', color: 'var(--primary)', backgroundColor: 'var(--primary)10' }}
+                                                style={{ flex: 1, color: 'var(--primary)', backgroundColor: 'var(--primary)10' }}
                                             >
-                                                <Edit2 size={16} />
+                                                <Edit2 size={16} /> Editar
                                             </button>
-                                            <button className="btn" style={{ padding: '8px', color: 'var(--danger)', backgroundColor: 'var(--danger)10' }}>
-                                                <Trash2 size={16} />
+                                            <button className="btn" style={{ flex: 1, color: 'var(--danger)', backgroundColor: 'var(--danger)10' }}>
+                                                <Trash2 size={16} /> Inativar
                                             </button>
                                         </div>
-                                    </td>
-                                </tr>
-                            )))}
-                        </tbody>
-                    </table>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </>
                 )}
             </motion.div>
 
             {/* Edit Modal */}
             <AnimatePresence>
                 {editingUser && (
-                    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }}>
+                    <div className="modal-shell" style={{ zIndex: 100 }}>
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="card"
-                            style={{ width: '100%', maxWidth: '500px', padding: '2rem' }}
+                            className="card modal-card"
+                            style={{ maxWidth: '500px', padding: '2rem' }}
                         >
                             <h2 style={{ marginBottom: '1.5rem' }}>Editar Profissional</h2>
                             <form onSubmit={(e) => {
@@ -229,7 +297,7 @@ export default function Users() {
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)' }}
                                     />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="form-grid cols-2">
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Papel (Permissão)</label>
                                         <select
@@ -284,19 +352,19 @@ export default function Users() {
                                     />
                                 </div>
 
-                                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
+                                <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
                                     <button
                                         type="button"
                                         onClick={() => setEditingUser(null)}
                                         className="btn"
-                                        style={{ flex: 1, backgroundColor: 'var(--background)', color: 'var(--text)' }}
+                                        style={{ backgroundColor: 'var(--background)', color: 'var(--text)' }}
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         type="submit"
                                         className="btn btn-primary"
-                                        style={{ flex: 1, justifyContent: 'center' }}
+                                        style={{ justifyContent: 'center' }}
                                         disabled={updateMutation.isPending}
                                     >
                                         {updateMutation.isPending ? <Loader2 className="animate-spin" size={18} /> : 'Salvar Alterações'}
@@ -310,13 +378,13 @@ export default function Users() {
             {/* Add User Modal */}
             <AnimatePresence>
                 {isAddingUser && (
-                    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, backdropFilter: 'blur(4px)' }}>
+                    <div className="modal-shell" style={{ zIndex: 100 }}>
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="card"
-                            style={{ width: '100%', maxWidth: '500px', padding: '2rem' }}
+                            className="card modal-card"
+                            style={{ maxWidth: '500px', padding: '2rem' }}
                         >
                             <h2 style={{ marginBottom: '1.5rem' }}>Cadastrar Novo Profissional</h2>
                             <form onSubmit={(e) => {
@@ -334,7 +402,7 @@ export default function Users() {
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)' }}
                                     />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="form-grid cols-2">
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>CPF</label>
                                         <input
@@ -368,7 +436,7 @@ export default function Users() {
                                         style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border)' }}
                                     />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div className="form-grid cols-2">
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>Papel (Permissão)</label>
                                         <select
@@ -400,19 +468,19 @@ export default function Users() {
                                     )}
                                 </div>
 
-                                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
+                                <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
                                     <button
                                         type="button"
                                         onClick={() => setIsAddingUser(false)}
                                         className="btn"
-                                        style={{ flex: 1, backgroundColor: 'var(--background)', color: 'var(--text)' }}
+                                        style={{ backgroundColor: 'var(--background)', color: 'var(--text)' }}
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         type="submit"
                                         className="btn btn-primary"
-                                        style={{ flex: 1, justifyContent: 'center' }}
+                                        style={{ justifyContent: 'center' }}
                                         disabled={createMutation.isPending}
                                     >
                                         {createMutation.isPending ? <Loader2 className="animate-spin" size={18} /> : 'Finalizar Cadastro'}

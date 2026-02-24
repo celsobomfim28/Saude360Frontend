@@ -1,4 +1,9 @@
 :root {
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+
   --primary: #1e3a8a;
   --primary-light: #3b82f6;
   --secondary: #0ea5e9;
@@ -62,6 +67,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  font-size: 16px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -97,15 +103,24 @@ body {
 }
 
 .btn {
-  padding: 0.75rem 1.5rem;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   border: none;
   font-weight: 600;
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  touch-action: manipulation;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-primary {
@@ -164,13 +179,8 @@ body {
 
 .grid {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
-}
-
-@media (max-width: 767px) {
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
 }
 
 .flex {
@@ -191,6 +201,18 @@ textarea {
   background: var(--input-bg) !important;
   color: var(--input-text) !important;
   border-color: var(--border) !important;
+  font-size: 16px;
+  min-height: 44px;
+  border-radius: 0.625rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-radius: 0.625rem;
 }
 
 input::placeholder,
@@ -279,7 +301,7 @@ textarea::placeholder {
   display: flex;
   justify-content: space-between;
   gap: 0.75rem;
-  font-size: 0.8125rem;
+  font-size: 0.85rem;
   margin-top: 0.5rem;
 }
 
@@ -294,6 +316,56 @@ textarea::placeholder {
 
 .desktop-only {
   display: none !important;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  width: 100%;
+  min-width: 760px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.actions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.tabs-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs-scroll .btn {
+  flex: 1 0 auto;
+  white-space: nowrap;
+}
+
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.split-layout-aside {
+  order: 2;
+}
+
+.split-layout-main {
+  order: 1;
 }
 
 /* Layout */
@@ -451,6 +523,16 @@ textarea::placeholder {
   .modal-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .actions-wrap {
+    width: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .form-grid.cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -477,13 +559,26 @@ textarea::placeholder {
   .dashboard-main-grid {
     grid-template-columns: 2fr 1fr;
   }
+
+  .split-layout {
+    grid-template-columns: minmax(260px, 1fr) minmax(0, 3fr);
+    gap: 1.5rem;
+  }
+
+  .split-layout-aside {
+    order: 1;
+  }
+
+  .split-layout-main {
+    order: 2;
+  }
 }
 
 .pagination-bar {
   margin-top: 1.5rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.75rem;
   color: var(--text-muted);
   font-size: 0.875rem;
@@ -492,20 +587,21 @@ textarea::placeholder {
 .pagination-actions {
   display: flex;
   gap: 0.5rem;
+  width: 100%;
 }
 
-@media (max-width: 767px) {
+@media (min-width: 768px) {
   .pagination-bar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .pagination-actions {
-    width: 100%;
+    width: auto;
   }
 
   .pagination-actions .btn {
-    flex: 1;
-    justify-content: center;
+    width: auto;
   }
 }

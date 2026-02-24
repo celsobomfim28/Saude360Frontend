@@ -127,7 +127,7 @@ export default function Appointments() {
 
             {filteredAppointments && filteredAppointments.length > 0 ? (
                 <div className="card">
-                    <div className="desktop-only" style={{ overflowX: 'auto' }}>
+                    <div className="desktop-only table-scroll">
                         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '860px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--border)' }}>

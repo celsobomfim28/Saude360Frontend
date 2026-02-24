@@ -197,7 +197,7 @@ export default function Patients() {
                     />
                 ) : (
                     <>
-                        <div className="desktop-only" style={{ overflowX: 'auto' }}>
+                        <div className="desktop-only table-scroll">
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '920px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid var(--background)', color: 'var(--text-muted)', fontSize: '0.875rem' }}>

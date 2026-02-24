@@ -151,7 +151,7 @@ export default function Telemedicine() {
 
   return (
     <div className="container">
-      <header style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="page-header">
         <div>
           <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             Telemedicina
@@ -160,7 +160,7 @@ export default function Telemedicine() {
             Atendimento remoto e documentos digitais
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="actions-wrap">
           <button
             onClick={() => setViewMode('consultations')}
             className={viewMode === 'consultations' ? 'btn btn-primary' : 'btn'}
@@ -200,8 +200,9 @@ export default function Telemedicine() {
           animate={{ opacity: 1, y: 0 }}
         >
           {consultations && consultations.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <>
+              <div className="desktop-only table-scroll">
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '860px' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)' }}>
                     <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 600, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Paciente</th>
@@ -257,8 +258,46 @@ export default function Telemedicine() {
                     );
                   })}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+
+              <div className="mobile-only mobile-card-list">
+                {consultations.map((consult: any) => {
+                  const TypeIcon = getTypeIcon(consult.type);
+                  return (
+                    <div key={`mobile-${consult.id}`} className="mobile-card">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem' }}>
+                        <div>
+                          <p style={{ margin: 0, fontWeight: 700 }}>{consult.patient.fullName}</p>
+                          <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>{getTypeLabel(consult.type)}</p>
+                        </div>
+                        {getStatusBadge(consult.status)}
+                      </div>
+
+                      <div className="mobile-card-row">
+                        <span className="mobile-card-label">Canal</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                          <TypeIcon size={14} color={getTypeColor(consult.type)} />
+                          {getTypeLabel(consult.type)}
+                        </span>
+                      </div>
+
+                      <div className="mobile-card-row">
+                        <span className="mobile-card-label">Data/Hora</span>
+                        <span>
+                          {new Date(consult.scheduledDate).toLocaleDateString('pt-BR')} {new Date(consult.scheduledDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+
+                      <div className="mobile-card-row">
+                        <span className="mobile-card-label">Motivo</span>
+                        <span style={{ textAlign: 'right' }}>{consult.reason}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           ) : (
             <EmptyState
               icon={Video}
@@ -328,7 +367,7 @@ export default function Telemedicine() {
           animate={{ opacity: 1, y: 0 }}
         >
           {certificates && certificates.length > 0 ? (
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1rem' }}>
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
               {certificates.map((certificate: any) => (
                 <div key={certificate.id} style={{ padding: '1.25rem', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
@@ -366,21 +405,12 @@ export default function Telemedicine() {
 
       {/* Modal de Agendamento */}
       {showModal && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50,
-          padding: '1rem'
-        }}>
+        <div className="modal-shell" style={{ zIndex: 50 }}>
           <motion.div
-            className="card"
+            className="card modal-card"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            style={{ maxWidth: '500px', width: '100%', maxHeight: '90vh', overflow: 'auto' }}
+            style={{ maxWidth: '500px' }}
           >
             <h2 style={{ marginBottom: '1.5rem' }}>Agendar Teleconsulta</h2>
 
@@ -470,7 +500,7 @@ export default function Telemedicine() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
               <button
                 onClick={() => {
                   setShowModal(false);
@@ -479,7 +509,6 @@ export default function Telemedicine() {
                   setReason('');
                 }}
                 className="btn"
-                style={{ flex: 1 }}
               >
                 Cancelar
               </button>
@@ -487,7 +516,6 @@ export default function Telemedicine() {
                 onClick={handleCreateConsultation}
                 disabled={createConsultationMutation.isPending}
                 className="btn btn-primary"
-                style={{ flex: 1 }}
               >
                 {createConsultationMutation.isPending ? 'Agendando...' : 'Agendar'}
               </button>
