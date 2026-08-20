@@ -152,6 +152,11 @@ export default function PatientFiltersModal({ isOpen, onClose, onApply, currentF
                             <option value="ACTIVE">Ativos</option>
                             <option value="INACTIVE">Inativos</option>
                         </select>
+                        {filters.status === 'INACTIVE' && (
+                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                                Pacientes inativados manualmente ou por <strong>saída automática</strong> ao completarem 2 anos (puericultura).
+                            </p>
+                        )}
                     </div>
 
                     {/* Faixa Etária */}

@@ -220,7 +220,14 @@ export default function Patients() {
                                                         {patient.fullName.charAt(0)}
                                                     </div>
                                                     <div>
-                                                        <p style={{ fontWeight: 600 }}>{patient.fullName}</p>
+                                                        <p style={{ fontWeight: 600 }}>
+                                                            {patient.fullName}
+                                                            {patient.inactiveReason && (
+                                                                <span style={{ marginLeft: '8px', fontSize: '0.625rem', padding: '2px 8px', borderRadius: '20px', background: patient.inactiveReason === 'AGE_OUT' ? '#fef3c7' : '#e2e8f0', color: patient.inactiveReason === 'AGE_OUT' ? '#92400e' : '#475569', fontWeight: 600, verticalAlign: 'middle' }}>
+                                                                    {patient.inactiveReason === 'AGE_OUT' ? 'Saída automática (2 anos)' : 'Inativado manualmente'}
+                                                                </span>
+                                                            )}
+                                                        </p>
                                                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{formatPatientAge(patient.age, patient.ageMonths)}</p>
                                                     </div>
                                                 </div>
@@ -306,7 +313,14 @@ export default function Patients() {
                                             {patient.fullName.charAt(0)}
                                         </div>
                                         <div>
-                                            <p style={{ fontWeight: 700, margin: 0, fontSize: '0.95rem' }}>{patient.fullName}</p>
+                                            <p style={{ fontWeight: 700, margin: 0, fontSize: '0.95rem' }}>
+                                                {patient.fullName}
+                                                {patient.inactiveReason && (
+                                                    <span style={{ marginLeft: '8px', fontSize: '0.625rem', padding: '2px 8px', borderRadius: '20px', background: patient.inactiveReason === 'AGE_OUT' ? '#fef3c7' : '#e2e8f0', color: patient.inactiveReason === 'AGE_OUT' ? '#92400e' : '#475569', fontWeight: 600, verticalAlign: 'middle' }}>
+                                                        {patient.inactiveReason === 'AGE_OUT' ? 'Saída automática (2 anos)' : 'Inativado manualmente'}
+                                                    </span>
+                                                )}
+                                            </p>
                                             <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.8rem' }}>{formatPatientAge(patient.age, patient.ageMonths)} • Área {patient.microArea.name}</p>
                                         </div>
                                     </div>
