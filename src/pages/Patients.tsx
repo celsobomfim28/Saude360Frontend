@@ -10,6 +10,7 @@ import {
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { formatPatientAge } from '../utils/age';
 import api from '../services/api';
 import { useAuthStore } from '../stores/authStore';
 import PatientModal from '../components/PatientModal';
@@ -220,7 +221,7 @@ export default function Patients() {
                                                     </div>
                                                     <div>
                                                         <p style={{ fontWeight: 600 }}>{patient.fullName}</p>
-                                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{patient.age} anos</p>
+                                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{formatPatientAge(patient.age, patient.ageMonths)}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -306,7 +307,7 @@ export default function Patients() {
                                         </div>
                                         <div>
                                             <p style={{ fontWeight: 700, margin: 0, fontSize: '0.95rem' }}>{patient.fullName}</p>
-                                            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.8rem' }}>{patient.age} anos • Área {patient.microArea.name}</p>
+                                            <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.8rem' }}>{formatPatientAge(patient.age, patient.ageMonths)} • Área {patient.microArea.name}</p>
                                         </div>
                                     </div>
 

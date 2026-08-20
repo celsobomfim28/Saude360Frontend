@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuthStore } from '../stores/authStore';
+import { formatPatientAge } from '../utils/age';
 
 export default function Indicators() {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -406,7 +407,7 @@ export default function Indicators() {
                                                 {patient.fullName}
                                             </div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                                {patient.age} anos • {patient.microArea}
+                                                {formatPatientAge(patient.age, patient.ageMonths)} • {patient.microArea}
                                             </div>
                                             {patient.criticalIndicators && patient.criticalIndicators.length > 0 && (
                                                 <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>

@@ -10,6 +10,7 @@ import { TeamProductionChart, RiskDistributionChart } from '../components/Report
 import { useReportFilters } from '../hooks/useReportFilters';
 import { useReportOptions } from '../hooks/useReportOptions';
 import IndicatorsReportView from '../components/IndicatorsReportView';
+import { formatPatientAge } from '../utils/age';
 
 interface ReportOption {
   id: string;
@@ -466,7 +467,7 @@ export default function Reports() {
                     <div>
                       <p style={{ fontWeight: '500' }}>{member.name}</p>
                       <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                        {member.age} anos • {member.sex === 'MALE' ? 'Masculino' : 'Feminino'}
+                        {formatPatientAge(member.age, member.ageMonths)} • {member.sex === 'MALE' ? 'Masculino' : 'Feminino'}
                       </p>
                     </div>
                     {member.programs?.length > 0 && (
@@ -771,7 +772,7 @@ export default function Reports() {
                     {patient.name}
                   </h4>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    {patient.age} anos • {patient.microArea}
+                    {formatPatientAge(patient.age, patient.ageMonths)} • {patient.microArea}
                   </p>
                 </div>
                 <span style={{

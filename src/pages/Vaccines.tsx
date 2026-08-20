@@ -6,6 +6,7 @@ import api from '../services/api';
 import { useAuthStore } from '../stores/authStore';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import { formatPatientAge } from '../utils/age';
 
 interface Vaccine {
   id: string;
@@ -310,7 +311,7 @@ export function Vaccines() {
                       {patient.fullName}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-                      {patient.age} {patient.age === 1 ? 'ano' : 'anos'}
+                      {formatPatientAge(patient.age, patient.ageMonths)}
                       {patient.eligibilityGroups && patient.eligibilityGroups.length > 0 && (
                         <span style={{ marginLeft: '8px' }}>
                           • {patient.eligibilityGroups.map((g: string) => {

@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../stores/authStore';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { formatPatientAge } from '../utils/age';
 
 export default function Alerts() {
     const navigate = useNavigate();
@@ -338,7 +339,7 @@ export default function Alerts() {
                                                         {patient.fullName}
                                                     </p>
                                                     <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                                                        {patient.age} anos • {patient.microArea}
+                                                        {formatPatientAge(patient.age, patient.ageMonths)} • {patient.microArea}
                                                     </p>
                                                 </div>
                                             </div>

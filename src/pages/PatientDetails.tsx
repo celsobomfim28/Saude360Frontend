@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { formatPatientAge } from '../utils/age';
 import {
     ArrowLeft,
     Clipboard,
@@ -99,7 +100,7 @@ export default function PatientDetails() {
                                 <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '12px', backgroundColor: '#fee2e2', color: '#991b1b', fontWeight: 600 }}>Inativo</span>
                             )}
                         </div>
-                        <p style={{ color: 'var(--text-muted)', margin: 0 }}>CPF: {patient.cpf} • CNS: {patient.cns} • {patient.age} anos</p>
+                        <p style={{ color: 'var(--text-muted)', margin: 0 }}>CPF: {patient.cpf} • CNS: {patient.cns} • {formatPatientAge(patient.age, patient.ageMonths)}</p>
                     </div>
                 </div>
                 <div className="actions-wrap">
