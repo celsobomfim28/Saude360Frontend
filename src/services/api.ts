@@ -32,7 +32,7 @@ api.interceptors.response.use(
             });
         }
 
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 && error.config?.url !== '/auth/login') {
             // Clear storage and redirect to login if unauthorized
             localStorage.removeItem('auth-storage');
             window.location.href = '/login';
