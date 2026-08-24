@@ -295,6 +295,7 @@ export default function Patients() {
                                                     <PatientActionsMenu
                                                         patientId={patient.id}
                                                         patientName={patient.fullName}
+                                                        isPregnant={patient.eligibilityGroups?.includes('PREGNANT')}
                                                     />
                                                 </div>
                                             </td>
@@ -362,6 +363,7 @@ export default function Patients() {
                                             <PatientActionsMenu
                                                 patientId={patient.id}
                                                 patientName={patient.fullName}
+                                                isPregnant={patient.eligibilityGroups?.includes('PREGNANT')}
                                             />
                                         </div>
                                     </div>

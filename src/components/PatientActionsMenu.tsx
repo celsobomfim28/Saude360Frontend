@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { MoreHorizontal, Edit, Trash2, FileText, Calendar, Home } from 'lucide-react';
+import { MoreHorizontal, Edit, Trash2, FileText, Calendar, Home, Baby } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +10,10 @@ import HomeVisitModal from './HomeVisitModal';
 interface PatientActionsMenuProps {
     patientId: string;
     patientName: string;
+    isPregnant?: boolean;
 }
 
-export default function PatientActionsMenu({ patientId, patientName }: PatientActionsMenuProps) {
+export default function PatientActionsMenu({ patientId, patientName, isPregnant = false }: PatientActionsMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
     const [isHomeVisitModalOpen, setIsHomeVisitModalOpen] = useState(false);
@@ -65,6 +66,15 @@ export default function PatientActionsMenu({ patientId, patientName }: PatientAc
             },
             color: 'var(--text)'
         },
+        ...(isPregnant ? [{
+            icon: Baby,
+            label: 'Registrar parto / puerpério',
+            onClick: () => {
+                navigate(`/patients/${patientId}/edit`);
+                setIsOpen(false);
+            },
+            color: '#be185d'
+        }] : []),
         {
             icon: Calendar,
             label: 'Agendar Consulta',

@@ -26,6 +26,13 @@ export default function PatientEdit() {
     primaryPhone: '',
     secondaryPhone: '',
     email: '',
+    eligibilityCriteria: {
+      isPregnant: false,
+      isPostpartum: false,
+      lastMenstrualDate: '',
+      hasHypertension: false,
+      hasDiabetes: false,
+    },
   });
 
   // Buscar dados do paciente
@@ -66,6 +73,13 @@ export default function PatientEdit() {
         primaryPhone: patient.primaryPhone || '',
         secondaryPhone: patient.secondaryPhone || '',
         email: patient.email || '',
+        eligibilityCriteria: {
+          isPregnant: Boolean(patient.isPregnant),
+          isPostpartum: Boolean(patient.isPostpartum),
+          lastMenstrualDate: patient.lastMenstrualDate ? patient.lastMenstrualDate.split('T')[0] : '',
+          hasHypertension: Boolean(patient.hasHypertension),
+          hasDiabetes: Boolean(patient.hasDiabetes),
+        },
       });
     }
   }, [patient]);
@@ -90,6 +104,12 @@ export default function PatientEdit() {
     e.preventDefault();
 
     const onlyDigits = (value?: string) => (value || '').replace(/\D/g, '');
+    const eligibility = formData.eligibilityCriteria;
+
+    if (eligibility.isPregnant && !eligibility.lastMenstrualDate) {
+      alert('Informe a DUM para paciente gestante.');
+      return;
+    }
 
     // Montar payload compatível com o schema do backend
     const dataToSend: any = {
@@ -111,6 +131,18 @@ export default function PatientEdit() {
       secondaryPhone: onlyDigits(formData.secondaryPhone),
       email: formData.email || '',
       microAreaId: patient?.microArea?.id,
+      eligibilityCriteria: {
+        isChild: Boolean(patient?.isChild),
+        isPregnant: eligibility.isPregnant,
+        isPostpartum: eligibility.isPostpartum,
+        hasHypertension: eligibility.hasHypertension,
+        hasDiabetes: eligibility.hasDiabetes,
+        isElderly: Boolean(patient?.isElderly),
+        isWoman: Boolean(patient?.isWoman),
+        ...(eligibility.isPregnant && eligibility.lastMenstrualDate
+          ? { lastMenstrualDate: new Date(`${eligibility.lastMenstrualDate}T12:00:00.000Z`).toISOString() }
+          : {}),
+      },
     };
     
     updateMutation.mutate(dataToSend);
@@ -119,6 +151,24 @@ export default function PatientEdit() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev: any) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEligibilityChange = (field: string, value: boolean | string) => {
+    setFormData((prev: any) => {
+      const current = prev.eligibilityCriteria;
+      const next = { ...current, [field]: value };
+
+      // Após o parto, a paciente deixa o grupo de gestantes e passa a ser acompanhada no puerpério.
+      if (field === 'isPostpartum' && value) {
+        next.isPregnant = false;
+        next.lastMenstrualDate = '';
+      }
+      if (field === 'isPregnant' && value) {
+        next.isPostpartum = false;
+      }
+
+      return { ...prev, eligibilityCriteria: next };
+    });
   };
 
   if (isLoading) {
@@ -418,6 +468,67 @@ export default function PatientEdit() {
                   style={{ width: '100%' }}
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Critérios de elegibilidade */}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ marginBottom: '0.5rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--border)' }}>
+              Critérios de Elegibilidade
+            </h3>
+            <p style={{ marginTop: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+              Ao registrar o parto, desmarque “Gestante” e marque “Puérpera”. A paciente permanece ativa para acompanhamento por até 45 dias.
+            </p>
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.eligibilityCriteria.hasHypertension}
+                  onChange={(e) => handleEligibilityChange('hasHypertension', e.target.checked)}
+                />
+                Pessoa com Hipertensão (HAS)
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.eligibilityCriteria.hasDiabetes}
+                  onChange={(e) => handleEligibilityChange('hasDiabetes', e.target.checked)}
+                />
+                Pessoa com Diabetes (DM)
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.eligibilityCriteria.isPregnant}
+                  onChange={(e) => handleEligibilityChange('isPregnant', e.target.checked)}
+                  disabled={formData.sex !== 'FEMALE'}
+                />
+                Gestante
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.eligibilityCriteria.isPostpartum}
+                  onChange={(e) => handleEligibilityChange('isPostpartum', e.target.checked)}
+                  disabled={formData.sex !== 'FEMALE'}
+                />
+                Puérpera (até 45 dias)
+              </label>
+              {formData.eligibilityCriteria.isPregnant && (
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.875rem' }}>
+                    DUM (Data da Última Menstruação) *
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.eligibilityCriteria.lastMenstrualDate}
+                    onChange={(e) => handleEligibilityChange('lastMenstrualDate', e.target.value)}
+                    required
+                    className="input"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
