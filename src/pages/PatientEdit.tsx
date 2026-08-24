@@ -30,6 +30,7 @@ export default function PatientEdit() {
       isPregnant: false,
       isPostpartum: false,
       lastMenstrualDate: '',
+      deliveryDate: '',
       hasHypertension: false,
       hasDiabetes: false,
     },
@@ -77,6 +78,7 @@ export default function PatientEdit() {
           isPregnant: Boolean(patient.isPregnant),
           isPostpartum: Boolean(patient.isPostpartum),
           lastMenstrualDate: patient.lastMenstrualDate ? patient.lastMenstrualDate.split('T')[0] : '',
+          deliveryDate: patient.prenatalData?.deliveryDate ? patient.prenatalData.deliveryDate.split('T')[0] : '',
           hasHypertension: Boolean(patient.hasHypertension),
           hasDiabetes: Boolean(patient.hasDiabetes),
         },
@@ -111,6 +113,11 @@ export default function PatientEdit() {
       return;
     }
 
+    if (eligibility.isPostpartum && !eligibility.deliveryDate) {
+      alert('Informe a data do parto para paciente puérpera.');
+      return;
+    }
+
     // Montar payload compatível com o schema do backend
     const dataToSend: any = {
       fullName: formData.fullName,
@@ -141,6 +148,9 @@ export default function PatientEdit() {
         isWoman: Boolean(patient?.isWoman),
         ...(eligibility.isPregnant && eligibility.lastMenstrualDate
           ? { lastMenstrualDate: new Date(`${eligibility.lastMenstrualDate}T12:00:00.000Z`).toISOString() }
+          : {}),
+        ...(eligibility.isPostpartum && eligibility.deliveryDate
+          ? { deliveryDate: new Date(`${eligibility.deliveryDate}T12:00:00.000Z`).toISOString() }
           : {}),
       },
     };
@@ -523,6 +533,21 @@ export default function PatientEdit() {
                     type="date"
                     value={formData.eligibilityCriteria.lastMenstrualDate}
                     onChange={(e) => handleEligibilityChange('lastMenstrualDate', e.target.value)}
+                    required
+                    className="input"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              )}
+              {formData.eligibilityCriteria.isPostpartum && (
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.875rem' }}>
+                    Data do parto *
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.eligibilityCriteria.deliveryDate}
+                    onChange={(e) => handleEligibilityChange('deliveryDate', e.target.value)}
                     required
                     className="input"
                     style={{ width: '100%' }}
